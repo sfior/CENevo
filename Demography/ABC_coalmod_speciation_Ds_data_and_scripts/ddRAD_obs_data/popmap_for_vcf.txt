@@ -1,0 +1,13 @@
+8_Dianthus_monospessulanus	outgroup
+14_Dianthus_anatolicus	outgroup
+84_Dianthus_arenarius	outgroup
+44_Dianthus_sylvestris_Scuol	D_sylvestris
+34_Dianthus_sylvestris_Scuol	D_sylvestris
+58_Dianthus_sylvestris_Baldo	D_sylvestris
+LacMauv	D_sylvestris
+Saviese	D_sylvestris
+Tsanfleuron	D_sylvestris
+Varens	D_sylvestris
+Challer	D_sylvestris
+Saxon	D_sylvestris
+

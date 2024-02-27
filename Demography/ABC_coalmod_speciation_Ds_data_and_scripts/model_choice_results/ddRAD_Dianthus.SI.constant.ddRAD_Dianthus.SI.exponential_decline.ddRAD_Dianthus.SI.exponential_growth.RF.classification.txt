@@ -1,0 +1,18 @@
+[1] "info on the Random Forest:"
+
+Call:
+ abcrf(modindex = modelindex, sumsta = all_sumstats_nomodel, lda = FALSE,      ntree = 1000, sampsize = min(10^5, length(modelindex)), paral = TRUE,      NCORES = 4) 
+Number of simulations: 119878
+     Prior error rate: 45.7891%
+
+Confusion matrix:
+                                          1     2     3 class.error
+ddRAD_Dianthus.SI.constant            12802  8973  7702   0.5656953
+ddRAD_Dianthus.SI.exponential_decline 16934 27105  7118   0.4701605
+ddRAD_Dianthus.SI.exponential_growth  10248  3916 25080   0.3609214
+[1] "#########################"
+[1] "result of classification:"
+                              contrast                     RF_majority_vote         post.prob Bayes_factor_of_best_model
+                                global ddRAD_Dianthus.SI.exponential_growth 0.646133333333333                         NA
+            ddRAD_Dianthus.SI.constant ddRAD_Dianthus.SI.exponential_growth 0.674666666666666           2.07377049180328
+ ddRAD_Dianthus.SI.exponential_decline ddRAD_Dianthus.SI.exponential_growth            0.8417           5.31711939355653

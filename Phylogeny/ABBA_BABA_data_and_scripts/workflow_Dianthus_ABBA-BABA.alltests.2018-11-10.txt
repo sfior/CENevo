@@ -1,0 +1,634 @@
+## because of possible artefacts as well as contaminated samples, lets run the tests again with sites in >90% of samples and with exclusing highmiss individuals:
+
+# samples with barcode 7 ( GGTTG ), contaminated from barcode 9, according to Simone:
+sample_29_D_deltoides
+sample_50_D_longicaulis
+sample_4_D_arenarius
+
+# also abviously cross-contaminated (from previous ABBA-BABA run):
+sample_44_D_glacialis
+
+
+
+cd /cluster/project/gdc/people/schamath/Dianthus_ABBA-BABA.2018-10
+
+############### ###############  ###############
+# Step 0: quality filter .vcf
+###############  ##############  ###############
+
+## since Simone reportedly didn't do any quality filtering other than removing extremely high missingness samples, lets first get this vcf through my quality filters:
+
+
+module load gdc
+module load python/2.7
+tb=/cluster/project/gdc/people/schamath/tools
+module load vcftools/0.1.16
+module load vcflib/1.0.1
+
+# rename:
+head -100 raw1_g5dp3lm.recode.vcf | grep "#" > vcf_head
+cat barcodes_phylogeny_w_Wallis_not_trunc_new_names.txt | sed "s/'//g" | awk '{print "sample_"$1"\t"$2}' > newnames_oldnames.txt
+cp RAxML_bipartitions.BS_TREE_1426.tre tmptree
+## replace barcodes with descriptive names in the tree and the vcf!
+while read line ; do
+echo $line
+echo $line 
+newn=$( echo $line | awk 'FS="\t" {print $1}' )
+oldname=$( echo $line | awk '{print $2}' )
+echo $oldname $newn
+cat vcf_head | sed "s/${oldname}/${newn}/g" > tmp && mv tmp vcf_head
+cat tmptree | sed "s/${oldname}/${newn}/g" > tmp && mv tmp tmptree
+done <newnames_oldnames.txt
+
+mv tmptree Dianthus_tree.descr_names.tre
+cat raw1_g5dp3lm.recode.vcf | grep -v "#" > body
+cat vcf_head body > raw1_g5dp3lm.descr_names.vcf
+rm body vcf_head
+
+
+## start filtering
+
+vcftools --vcf raw1_g5dp3lm.descr_names.vcf --mac 1 --remove-indels --minDP 3
+
+vcf=raw1_g5dp3lm.descr_names.vcf
+LSB_JOBINDEX=1
+
+vcftools --vcf ${vcf} --keep keeplist.contaminated_removed.2018-11-09.txt --minDP 3 --mac 1 --recode --recode-INFO-all --out ${LSB_JOBINDEX}.tmp1
+
+vcftools --vcf ${LSB_JOBINDEX}.tmp1.recode.vcf --missing-indv
+
+
+#### allelic primitives:
+vcfallelicprimitives ${LSB_JOBINDEX}.tmp1.recode.vcf --keep-info --keep-geno | tr "|" "/" > ${LSB_JOBINDEX}.tmp2.vcf
+
+##### drop indels:
+vcftools --vcf ${LSB_JOBINDEX}.tmp2.vcf --remove-indels --recode --recode-INFO-all --out ${LSB_JOBINDEX}.tmp3 
+
+#Because RADseq targets specific locations of the genome, we expect that the allele balance in our data (for real loci) should be close to 0.5, or if fixed in some population, it must be close to 0 or close to 1 (depending on what the reference is!!)
+vcffilter -s -f "AB > 0.25 & AB < 0.75 | AB < 0.01 | AB > 0.99"  ${LSB_JOBINDEX}.tmp3.recode.vcf > ${LSB_JOBINDEX}.tmp4.recode.vcf
+
+vcffilter -f "QUAL / DP > 0.25" ${LSB_JOBINDEX}.tmp4.recode.vcf > ${LSB_JOBINDEX}.tmp5.recode.vcf
+
+## remove excessively heterozygous sites: probably paralogy!
+
+vcftools --vcf ${LSB_JOBINDEX}.tmp5.recode.vcf --recode --recode-INFO-all --out ${LSB_JOBINDEX}.tmp6
+vcftools --vcf ${LSB_JOBINDEX}.tmp6.recode.vcf --hardy --out ${LSB_JOBINDEX}
+
+cat ${LSB_JOBINDEX}.hwe | awk '{ if($8 <= 0.05) print $1"\t"$2 }' > excessively_heterozygous_sites.${LSB_JOBINDEX}.txt
+
+vcftools --vcf ${LSB_JOBINDEX}.tmp6.recode.vcf --exclude-positions excessively_heterozygous_sites.${LSB_JOBINDEX}.txt --mac 1 --recode --recode-INFO-all --out ${LSB_JOBINDEX}.tmp7
+
+
+mv ${LSB_JOBINDEX}.tmp7.recode.vcf ${LSB_JOBINDEX}.stage1_filtered.vcf
+# returns: ${LSB_JOBINDEX}.stage1_filtered.vcf
+# cleanup:
+rm ${LSB_JOBINDEX}.tmp* ${LSB_JOBINDEX}.hwe excessively_heterozygous_sites.${LSB_JOBINDEX}.txt
+
+
+vcftools --vcf ${LSB_JOBINDEX}.stage1_filtered.vcf --geno-depth
+
+# USE NEW SCRIPT HERE THAT SETS THRESHOLDS PER SITE, NOT PER CONTIG as useful for denovo-assmebled RAD reference; here mapped to genome so contigs not the same meaning as in RAD reference!!
+python /cluster/project/gdc/people/schamath/tools/vcf_drop_genotypes_exceeding_2std_indiv_mean_depth.per_site.py --vcf ${LSB_JOBINDEX}.stage1_filtered.vcf --gdepth out.gdepth
+rm out.gdepth
+
+#### now two rounds of missingness filtering on individuals AND on sites:, first exclude samples greater 15% miss, then greater 10% miss
+# missingness filter:
+vcftools --vcf ${LSB_JOBINDEX}.stage1_filtered.vcf --mac 1 --max-missing 0.9 --recode
+
+vcftools --vcf out.recode.vcf --missing-indv
+cat out.imiss | awk '{if($5 > 0.15) print $1}' > exclude_samples
+cp keeplist.contaminated_removed.2018-11-09.txt keeplist
+while read line ; do
+cat keeplist | grep -v $line > tmp
+mv tmp keeplist
+done <exclude_samples 
+
+# exclude_samples: surprisingly, mostly D. carthusianorum!!
+sample_48_D_hungaricus
+sample_78_D_strictus
+sample_49_D_juniperinus_subsp_bauhinorum
+sample_Dc_POP6
+sample_Dc_POP4
+sample_Dc_POP3
+sample_Dc_POP5
+sample_Dc_POP2
+sample_Dc_POP1
+
+
+# missingness filter:
+vcftools --vcf ${LSB_JOBINDEX}.stage1_filtered.vcf --keep keeplist --mac 1 --max-missing 0.9 --recode
+
+After filtering, kept 85 out of 94 Individuals
+Outputting VCF file...
+After filtering, kept 6092 out of a possible 109397 Sites
+
+vcftools --vcf out.recode.vcf --missing-indv
+cat out.imiss | awk '{if($5 > 0.1) print $1}' > exclude_samples
+cp keeplist.contaminated_removed.2018-11-09.txt keeplist
+while read line ; do
+cat keeplist | grep -v $line > tmp
+mv tmp keeplist
+done <exclude_samples 
+
+## second round excluded: (here also those from first round)
+sample_22_D_carthusianorum
+sample_25_D_carthusianorum
+sample_27_D_carthusianorum
+sample_26_D_carthusianorum
+sample_43_D_glacialis
+sample_86_D_viscidus
+sample_76_D_ssp.
+sample_13_D_broteri
+sample_16_D_carthusianorum
+sample_12_D_brachycalyx
+sample_52_D_longicaulis
+sample_17_D_carthusianorum
+sample_11_D_brachycalyx
+sample_Ds_POP3
+sample_48_D_hungaricus
+sample_78_D_strictus
+sample_49_D_juniperinus_subsp_bauhinorum
+sample_Dc_POP6
+sample_Dc_POP4
+sample_Dc_POP3
+sample_Dc_POP5
+sample_Dc_POP2
+sample_Dc_POP1
+
+# missingness filter:
+vcftools --vcf ${LSB_JOBINDEX}.stage1_filtered.vcf --keep keeplist --mac 1 --max-missing 0.9 --recode
+vcftools --vcf out.recode.vcf --missing-indv # OK, now max miss per indiv is 13% (in one Ds)
+
+
+
+mv out.recode.vcf TotalSNPs.Dianthus_phylo_for_ABBA-BABA.minpres0.9.2018-11-10.vcf
+
+rm ${LSB_JOBINDEX}.log ${LSB_JOBINDEX}.stage1_filtered.vcf ${LSB_JOBINDEX}.stage1_filtered.vcf.indiv_cov_filtered.vcf out.log
+
+mv out.gdepth.indiv_coverage_report.txt TotalSNPs.Dianthus_phylo_for_ABBA-BABA.minpres0.9.2018-11-10.vcf.gdepth.indiv_coverage_report.txt
+#############
+
+
+############### ###############  ###############
+# Step 1: convert .vcf genotypes to allele frequencies, arbitrary polarised
+###############  ##############  ###############
+
+vcf=TotalSNPs.Dianthus_phylo_for_ABBA-BABA.minpres0.9.2018-11-10.vcf
+
+#### create popmaps:
+head -100 ${vcf} | grep "#" | tail -1 | tr "\t" "\n" | grep sample > tmp
+paste tmp tmp > popmap.for_ABBA-BABA.2018-11-10.txt
+
+
+module load gdc
+module load python/2.7
+tb=/cluster/project/gdc/people/schamath/tools
+
+python $tb/vcf_to_arbitrary_allele_freq.py --popmap popmap.for_ABBA-BABA.2018-11-10.txt  --vcf ${vcf} --max_missing_ingr 0.99 --out ${vcf}.arbitrary_allele_freqs.txt
+
+## retained sites:	7695 out of 7695
+
+
+
+###############  ##############  ###############
+# Step 2: build quartets for ABBA-BABA tests!
+###############  ##############  ###############
+
+python find_valid_ABBA-BABA_quartets.Dianthus.alltests.2018-11-10.py 
+
+After filtering, each sample contained 
+We restricted the ABBA-BABA tests to those taxa quartets conforming to the bifurcating phylogenetic tree and on the condition that they contained at most one sample of Section Armerium. Three of these were alternated as the outgroup in different tests. Possible tests were randomly downsampled to maximum 30 tests per species pair. There were 36,135 such quartets.
+
+## ABBA-BABA_quartets.Dianthus.alltests.2018-11-10.txt
+
+###############  ##############  ###############
+# Step 3: run ABBA-BABA tests!
+###############  ##############  ###############
+
+
+module load gdc
+module load python/2.7
+tb=/cluster/project/gdc/people/schamath/tools
+
+
+### OK fine, but better: parallelise it!
+=> run script on different chunks of the test statistics!
+
+#lets use 60 cores, so 36135/60 = 603 per core:
+
+mkdir dstat_chunks
+cd dstat_chunks
+ln -s ../TotalSNPs.Dianthus_phylo_for_ABBA-BABA.minpres0.9.2018-11-10.vcf.arbitrary_allele_freqs.txt ./infreq.txt
+cat ../ABBA-BABA_quartets.Dianthus.alltests.2018-11-10.txt | shuf > tmp
+split -l 603 tmp chunk_
+rm tmp
+
+# it used only c. 300 MB RAM per job!
+for i in $(ls chunk_* ) ; do
+echo "python /cluster/project/gdc/people/schamath/tools/abba_baba_freq.2018-10-26.py --i infreq.txt --tests ${i} --o Dstats_out_${i}.txt" > fu.sh
+bsub -J "${i}" -W 4:0 -n 1 -R "rusage[mem=2000]" -R "rusage[scratch=1000]" < fu.sh
+done
+
+
+OK!!!!
+
+#######################
+# back-end
+#######################
+
+# collect chunks' outputs and cleanup:
+# 
+cat Dstats_out_chunk_aa.txt | grep "#" -A2 > Dstats_master.txt
+for i in $( ls Dstats_out_* ) ; do
+dat=$(tail -n +15 $i)
+echo -e "$dat" >> Dstats_master.txt
+done
+# 
+mv Dstats_master.txt ../Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.txt
+cd ../
+rm -r dstat_chunks
+
+
+####################
+# PLOT AS HEATMAP!
+####################
+
+
+
+# python code to collect the multiple comparisons per population pair:
+# each D-test is actually informative about TWO pairwise comparsons: p1-p3 and p2-p3!
+# but it can only be significant for none or one of the comparisons, not both. Which one it is is indicated by the positive/negative direction:
+# pseudocode:
+# if p <= 0.05:
+# 	if positive D-statistic:
+# 		we have ABBA excess = evidence for introgression p2-p3, 
+# 		n.s. for p1-3
+# 	elif negative D-statistic:
+# 		 we have BABA excess = evidence for introgression p1-p3,
+# 		 n.s. for p2-3
+# elif p > 0.05:
+# 	n.s. for both p1-p3 and p2-p3
+#
+
+def make_nonredundant_pairs (samples):
+	iterlist1 = samples
+	iterlist2 = iterlist1
+	combinations = []
+	for a in iterlist1:
+		for b in iterlist2:
+			if a != b:
+				comb = sorted([a, b])
+				combinations.append(comb)	
+	unique_combs = [list(x) for x in set(tuple(x) for x in combinations)]
+	return unique_combs
+
+
+
+def extract_max_Dstat_for_significant_Dstats (infile, outfile, min_informative_sites, alpha):
+	alpha = float(alpha)
+	with open(infile, "r") as f:
+		a = [f.readline() for i in range(13)] # drop header
+		testresults = [ line.strip("\n").split("\t") for line in f ]
+	# which pairs are possible (irrespective of topology)?
+	all_pops = list( set( [x[0] for x in testresults  ] + [x[1] for x in testresults  ] + [x[2] for x in testresults  ] ) )
+	all_possible_pairs = make_nonredundant_pairs (all_pops)
+	all_possible_pairs = [ "XXX".join(x) for x in all_possible_pairs ]	
+	# collect significant Dstats for each pair:
+	pairs_results = {k:[] for k in all_possible_pairs}
+	pair_tests_count = {}
+	for t in testresults:
+		pair13 = "XXX".join( sorted( [ t[0], t[2] ])  )
+		pair23 = "XXX".join( sorted( [ t[1], t[2] ])  )
+		if int( t[4] ) >= min_informative_sites:
+			if float( t[10] ) <= alpha:
+				Dstat = float( t[7] )
+				if Dstat < 0.0:
+					# we have ABBA excess = evidence for introgression p2-p3, 
+					# n.s. for p1-3
+					pairs_results[pair23].append( abs(Dstat) )
+					pairs_results[pair13].append( 0.0 )
+				elif Dstat > 0.0:
+					# we have BABA excess = evidence for introgression p1-p3,
+					# n.s. for p2-3
+					pairs_results[pair13].append( abs( Dstat ) )
+					pairs_results[pair23].append( 0.0 )
+			else: ## pairs were tested but result was non-significant: Dstat = 0.0
+				pairs_results[pair23].append( 0.0 )
+				pairs_results[pair13].append( 0.0 )
+	final_results = []
+	for pair in sorted( pairs_results.keys() ):
+		try:
+	#		D_summary = sum( pairs_results[pair] ) / len ( pairs_results[pair] )
+			D_summary = max( pairs_results[pair] ) 
+	#		D_summary = min( pairs_results[pair] )
+		except ValueError:
+	#	except ZeroDivisionError:	
+			D_summary = "not_testable_given_topology_or_not_enough_informative_sites"
+		final_results.append( "\t".join( [pair.split("XXX")[0], pair.split("XXX")[1], str( D_summary ) ] ) )
+	with open(outfile, "w") as f:
+		f.write( "\n".join(final_results) )
+
+##
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.txt"
+outfile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.01.summary.max.txt"
+outfile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_1.0.summary.max.txt"
+outfile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.1.summary.max.txt"
+outfile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.txt"
+alpha=0.01
+alpha=1.0
+alpha=0.1
+alpha=0.0001
+min_informative_sites=0
+extract_max_Dstat_for_significant_Dstats (infile, outfile, min_informative_sites, alpha)
+
+
+############################################################################
+
+# OK, now go to R for plotting and so forth:
+
+
+# add R executables to PATH variable:
+PATH=$PATH:/cluster/project/gdc/people/schamath/tools/R-3.2.5/bin
+
+#####
+## setwd("/Users/scharmann/Downloads/")
+
+library(ape)
+
+# define function for plotting:
+plot_matrix_and_tree <- function(infile, out_pdf, treefile, rootname) {
+	
+	mydat <- read.table(infile, header = FALSE)
+	colnames(mydat) <- c("pop1","pop2","max_Dstat")
+
+	mydat$max_Dstat <- as.character(mydat$max_Dstat)
+	mydat$max_Dstat[mydat$max_Dstat=="not_testable_given_topology_or_not_enough_informative_sites"] <- "na"
+	mydat$max_Dstat <- as.numeric(mydat$max_Dstat)
+
+	## extract the order of the taxa for this heatmap from the phylo tree, so that close relatives are nearby!
+	mytree <- unroot( read.tree( treefile ) )
+	mytree <- root(mytree, rootname, resolve.root = TRUE)
+	mytree <- ladderize(mytree)
+
+	write.tree(mytree, file = "tmp.tree.txt", append = FALSE,
+			   digits = 10, tree.names = FALSE)
+	mytree <- read.tree("tmp.tree.txt")
+
+	# plot the tree:
+	pdf(  paste(out_pdf, treefile, ".cladogram.pdf" , sep = "") )
+	plot(mytree, type = "phylogram", use.edge.length = FALSE, show.tip.label = FALSE) # we now the tip labels from the plot anyway.
+	dev.off()
+
+	# now the tip labels are ordered by phylogenetic topology. Drop last element which is the root:
+	taxa_order_for_plot <- mytree$tip
+	taxa_order_for_plot <- taxa_order_for_plot[-length(taxa_order_for_plot)]
+
+	# if there are some taxa in the tree but not in the Dstat data, add them to the Dstat data with "na"
+	allpairs = c()
+	for (t1 in taxa_order_for_plot) {
+		for (t2 in taxa_order_for_plot) {
+			if (t1 != t2) {
+				pair = paste(sort(c(t1,t2)), collapse = "XXX")
+				allpairs = c(allpairs, pair)	
+			}
+		}
+	}
+	upairs = unique(allpairs)
+
+	seen_pairs = paste(mydat$pop1, mydat$pop2, sep = "XXX")
+	for (p in upairs) {
+		if (! is.element(p, seen_pairs) ) {
+			print("new")
+			newpair = strsplit(p, "XXX")[[1]]
+			print(newpair)
+			x <- data.frame( newpair[1],newpair[2],NA )
+			mydat <- rbind(mydat, setNames(x, names(mydat)))
+		}
+	}
+
+	# convert Dstat data to matrix
+	an <- with(mydat, sort(unique(c(as.character(pop1),
+							as.character(pop2)))))
+	M <- array(0, c(length(an), length(an)), list(an, an))
+	i <- match(mydat$pop1, an)
+	j <- match(mydat$pop2, an)
+	M[cbind(i,j)] <- M[cbind(j,i)] <- mydat$max_Dstat
+	diag(M) <- NA # set diagonal to NA, because self x self makes no sense.
+
+
+
+
+	## remember: object[row,column]
+
+	## build new matrix:
+	r1_M <- matrix(nrow=nrow(M), ncol=0)
+	for (i in taxa_order_for_plot) {
+	print(i)
+	M_idx = which(colnames(M) == i) 
+	r1_M <- cbind(r1_M, M[,M_idx])
+	}
+
+	rownames(r1_M) <- rownames(M)
+	colnames(r1_M) <- taxa_order_for_plot
+
+	r2_M <- matrix(nrow=0, ncol=ncol(M))
+	for (i in taxa_order_for_plot) {
+	print(i)
+	M_idx = which(rownames(M) == i) 
+	r2_M <- rbind(r2_M, r1_M[M_idx,])
+	}
+
+	reordered_Dstats <- data.frame( r2_M )
+	rownames(r2_M) <- taxa_order_for_plot
+
+	## some more preparation for plotting:
+	fu <- apply(r2_M, 2, rev)
+	colnames(fu) <- rev(taxa_order_for_plot)
+	rownames(fu) <- rev(taxa_order_for_plot)
+	Mtbplotted <- fu
+
+	##################### PLOT
+	## remember that "device contains figure contains plot"
+	#plot < figure < device !
+	## mar 	numerical vector indicating margin size c(bottom, left, top, right) in lines. default = c(5, 4, 4, 2) + 0.1 
+
+	cols= rev( gray.colors(100))
+	zbreaks <- seq(min(Mtbplotted, na.rm=T), max(Mtbplotted, na.rm=T), by = (max(Mtbplotted, na.rm=T) - min(Mtbplotted, na.rm=T)) / 100 )
+
+	pdf(out_pdf)
+	layout(matrix(1:2, 1,2), widths=c(8,3), heights=c(6)) # specifies row/column arragmenet of the device
+
+	par(mar=c(1,9.5,9,0.0) + 0.1 )
+	par(pty="s")
+	image(Mtbplotted, col = cols, axes=FALSE, frame.plot=FALSE, ann=FALSE)
+	axis(2, at = seq(0,1, by = 1.0/(length(rownames(Mtbplotted))-1) ), labels = rev(rownames(Mtbplotted)), las=1, cex.axis = 0.2)
+	axis(3, at = seq(0,1, by = 1.0/(length(colnames(Mtbplotted))-1) ), labels = colnames(Mtbplotted), las=2, cex.axis = 0.2)
+
+
+	par(pty="m")
+	par(mar=c(6,2,15,6.5))
+	image(x=1, y=zbreaks, z=matrix(zbreaks, 1, length(zbreaks)), col=cols, breaks=zbreaks, useRaster=TRUE, xlab="", ylab="", axes=FALSE)
+	axis(4, at=c( min(Mtbplotted, na.rm=T), max(Mtbplotted, na.rm=T)), las=2)
+	mtext("max D statistic", side=4, line=3)
+	box()
+
+	dev.off()
+
+
+}
+
+# define function for plotting:
+plot_matrix_and_tree_drop_absent_tips <- function(infile, out_pdf, treefile, rootname) {
+
+	mydat <- read.table(infile, header = FALSE)
+	colnames(mydat) <- c("pop1","pop2","max_Dstat")
+
+	mydat$max_Dstat <- as.character(mydat$max_Dstat)
+	mydat$max_Dstat[mydat$max_Dstat=="not_testable_given_topology_or_not_enough_informative_sites"] <- "na"
+	mydat$max_Dstat <- as.numeric(mydat$max_Dstat)
+
+	#### extract the order of the taxa for this heatmap from the phylo tree, so that close relatives are nearby!
+	mytree <- unroot( read.tree( treefile ) )
+	# cleanup tree: remove any taxa except the root that are NOT in the mydat$pop1 or mydat$pop2
+	mydat_pops = unique(c(as.character(mydat$pop1), as.character(mydat$pop2), rootname))
+	to_be_dropped_pops <- setdiff(mytree$tip, mydat_pops)
+	mytree <- drop.tip(mytree, to_be_dropped_pops, trim.internal = TRUE, subtree = FALSE, interactive = FALSE)
+
+
+	mytree <- root(mytree, rootname, resolve.root = TRUE)
+	mytree <- ladderize(mytree)
+
+	write.tree(mytree, file = "tmp.tree.txt", append = FALSE,
+			   digits = 10, tree.names = FALSE)
+	mytree <- read.tree("tmp.tree.txt")
+
+	# plot the tree:
+	pdf(  paste(out_pdf, treefile, ".cladogram.pdf" , sep = "") )
+	plot(mytree, type = "phylogram", use.edge.length = FALSE, show.tip.label = FALSE) # we now the tip labels from the plot anyway.
+	dev.off()
+
+	# now the tip labels are ordered by phylogenetic topology. Drop last element which is the root:
+	taxa_order_for_plot <- mytree$tip
+	taxa_order_for_plot <- taxa_order_for_plot[-length(taxa_order_for_plot)]
+
+
+	# convert Dstat data to matrix
+	an <- with(mydat, sort(unique(c(as.character(pop1),
+							as.character(pop2)))))
+	M <- array(0, c(length(an), length(an)), list(an, an))
+	i <- match(mydat$pop1, an)
+	j <- match(mydat$pop2, an)
+	M[cbind(i,j)] <- M[cbind(j,i)] <- mydat$max_Dstat
+	diag(M) <- NA # set diagonal to NA, because self x self makes no sense.
+
+
+	## remember: object[row,column]
+
+	## build new matrix:
+	r1_M <- matrix(nrow=nrow(M), ncol=0)
+	for (i in taxa_order_for_plot) {
+	print(i)
+	M_idx = which(colnames(M) == i) 
+	r1_M <- cbind(r1_M, M[,M_idx])
+	}
+
+	rownames(r1_M) <- rownames(M)
+	colnames(r1_M) <- taxa_order_for_plot
+
+	r2_M <- matrix(nrow=0, ncol=ncol(M))
+	for (i in taxa_order_for_plot) {
+	print(i)
+	M_idx = which(rownames(M) == i) 
+	r2_M <- rbind(r2_M, r1_M[M_idx,])
+	}
+
+	reordered_Dstats <- data.frame( r2_M )
+	rownames(r2_M) <- taxa_order_for_plot
+
+	## some more preparation for plotting:
+	fu <- apply(r2_M, 2, rev)
+	colnames(fu) <- rev(taxa_order_for_plot)
+	rownames(fu) <- rev(taxa_order_for_plot)
+	Mtbplotted <- fu
+
+	##################### PLOT
+	## remember that "device contains figure contains plot"
+	#plot < figure < device !
+	## mar 	numerical vector indicating margin size c(bottom, left, top, right) in lines. default = c(5, 4, 4, 2) + 0.1 
+
+	cols= rev( gray.colors(100))
+	zbreaks <- seq(min(Mtbplotted, na.rm=T), max(Mtbplotted, na.rm=T), by = (max(Mtbplotted, na.rm=T) - min(Mtbplotted, na.rm=T)) / 100 )
+
+	pdf(out_pdf)
+	layout(matrix(1:2, 1,2), widths=c(8,3), heights=c(6)) # specifies row/column arragmenet of the device
+
+	par(mar=c(1,9.5,9,0.0) + 0.1 )
+	par(pty="s")
+	image(Mtbplotted, col = cols, axes=FALSE, frame.plot=FALSE, ann=FALSE)
+	axis(2, at = seq(0,1, by = 1.0/(length(rownames(Mtbplotted))-1) ), labels = rev(rownames(Mtbplotted)), las=1, cex.axis = 0.2)
+	axis(3, at = seq(0,1, by = 1.0/(length(colnames(Mtbplotted))-1) ), labels = colnames(Mtbplotted), las=2, cex.axis = 0.2)
+
+
+	par(pty="m")
+	par(mar=c(6,2,15,6.5))
+	image(x=1, y=zbreaks, z=matrix(zbreaks, 1, length(zbreaks)), col=cols, breaks=zbreaks, useRaster=TRUE, xlab="", ylab="", axes=FALSE)
+	axis(4, at=c( min(Mtbplotted, na.rm=T), max(Mtbplotted, na.rm=T)), las=2)
+	mtext("max D statistic", side=4, line=3)
+	box()
+
+	dev.off()
+
+}
+
+
+## actual plotting:
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.01.summary.max.txt"
+out_pdf="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.01.summary.max.pdf"
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_1.0.summary.max.txt"
+out_pdf="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_1.0.summary.max.pdf"
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.1.summary.max.txt"
+out_pdf="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.1.summary.max.pdf"
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.txt"
+out_pdf="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.pdf"
+
+infile="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.txt.nicenames.txt"
+out_pdf="Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.txt.nicenames.pdf"
+
+
+treefile="Dianthus_tree.descr_names.tre.nicenames.txt"
+rootname="sample_10_D_armeria"
+plot_matrix_and_tree_drop_absent_tips (infile, out_pdf, treefile, rootname)
+
+
+###### cleaner names without "sample_"
+
+old_to_new = {}
+with open("oldnames_to_nicenames.txt", "r") as F:
+	for line in F:
+		old_to_new[line.strip("\n").split("\t")[0]] = line.strip("\n").split("\t")[1] 
+
+
+infiles = ["Dstats_out.Dianthus.all_tests.indiv_level.2018-11-10.alpha_0.0001.summary.max.txt","Dianthus_tree.descr_names.tre"]
+
+for f in infiles:
+	with open(f, "r") as F:
+		conts = F.read()
+	for k,v in old_to_new.items():
+		conts = conts.replace(k,v)
+	with open(f + ".nicenames.txt", "w") as O:
+		O.write(conts)	 
+
+
+
+######### remove apparent hybird/contamin sample_44_D_glacialis:
+
+
+cat Dstats_out.Dianthus.all_tests.indiv_level.2018-11-03.txt | grep -v "sample_44_D_glacialis" > Dstats_out.Dianthus.all_tests.indiv_level.cleaned.2018-11-03.txt
+
+
+

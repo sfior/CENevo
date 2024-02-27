@@ -1,0 +1,666 @@
+
+############### ###############  ###############
+# 1. step:  prepare & curate RAD-data vcf for conversion to inouts for ABC pipeline
+############### ###############  ###############
+
+
+## vcf input file:
+
+/cluster/project/gdc/shared/p219/data_introgression_Low_CEN_4_Mathias/raw1_g5dp3lm_12ind.RADloci_names.vcf.gz
+
+- Simone has sub-sampled the RAD-markers aligned to the whole genome into regions of 126 bp length, 
+	with variants' positions given in this range
+	zcat raw1_g5dp3lm_12ind.RADloci_names.vcf.gz | grep -v "#" | cut -f2 | sort | uniq 
+
+- the contigs have also been renamed to reflect the sub-sampling, there are now 53722 pseudo-contigs instead of the real,large genome-assembly contigs:
+	zcat raw1_g5dp3lm_12ind.RADloci_names.vcf.gz | grep -v "#" | cut -f1 | sort | uniq | wc -l
+
+- vcf still contains "|" separators for phased genotypes made from MNPs
+- also still contains indels AND non-biallelic SNPs
+
+
+### 1. prepare ABC input files:
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data
+cp /cluster/project/gdc/shared/p219/data_introgression_Low_CEN_4_Mathias/raw1_g5dp3lm_12ind.RADloci_names.vcf.gz ./
+
+gunzip raw1_g5dp3lm_12ind.RADloci_names.vcf.gz 
+
+# replace odd genotype delimiters:
+cat raw1_g5dp3lm_12ind.RADloci_names.vcf | tr '|' '/' > tmp1.vcf
+
+# remove indels AND non-biallelic SNPs:
+grep "#" tmp1.vcf > tmp2.vcf
+cat tmp1.vcf | awk '{if (length($5) == 1) print }' >> tmp2.vcf 
+
+cat tmp2.vcf | grep -v "#" | cut -f1 | sort | uniq | wc -l
+# remain: 52950 RAD-tags!
+
+mv tmp2.vcf Dianthus_for_ABC.2018-08-29.vcf
+rm tmp1.vcf
+
+################## filter pop missingness:
+
+## popmap_for_vcf.txt
+8_Dianthus_monospessulanus	outgroup
+14_Dianthus_anatolicus	outgroup
+84_Dianthus_arenarius	outgroup
+44_Dianthus_sylvestris_Scuol	D_sylvestris
+34_Dianthus_sylvestris_Scuol	D_sylvestris
+58_Dianthus_sylvestris_Baldo	D_sylvestris
+LacMauv	D_sylvestris
+Saviese	D_sylvestris
+Tsanfleuron	D_sylvestris
+Varens	D_sylvestris
+Challer	D_sylvestris
+Saxon	D_sylvestris
+
+## 
+
+bash ../tools_used/popmiss_filter_nomac_for_euler.sh Dianthus_for_ABC.2018-08-29.vcf popmap_for_vcf.txt 0.2 Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf
+
+
+############
+## this is popmiss_filter_nomac_for_euler.sh
+# also removes any RAD-tags that contain SNPs that are excessively heterozygous (Hardy-Weinberg) in any of the populations 
+
+if [[ -z "$2" ]]; then
+echo "Usage is pop_missing_filter vcffile popmap percent_missing_per_pop name_for_output"
+exit 1
+fi
+
+vcftb=/cluster/project/gdc/people/schamath/tools/vcftools/bin
+
+
+POPS=( `cut -f2 $2 | sort | uniq `)
+scratchdirname=scratchdir_${RANDOM}
+
+echo ${scratchdirname}
+mkdir ${scratchdirname}
+cd ${scratchdirname}
+
+for i in "${POPS[@]}"
+do (
+grep -w $i ../$2 | cut -f1 > keep.$i
+
+# first check missingness
+$vcftb/vcftools --vcf ../$1 --keep keep.$i --missing-site --out $i 
+awk '!/CHROM/' $i.lmiss | awk -v x=$3 '$6 < x' | cut -f1,2 > goodloci.${i} # has two columns: contig	pos
+
+# now check Hardy-Weinberg heterozygote excess
+$vcftb/vcftools --vcf ../$1 --keep keep.$i --hardy --out $i
+cat ${i}.hwe | awk '{ if ($8 <= 0.05 ) print $1 }' | sort | uniq > excessively_heterozygous_refcontigs.${i}.txt # has one column: contig
+
+# now remove the hardy-violators from the list of goodloci; because the awk utput is empty if the excessively_heterozygous_refcontigs.${i}.txt is empty, we have to use this if statemnt to let all goodloci pass:
+awk 'NR==FNR{a[$0];next}!($1 in a)' excessively_heterozygous_refcontigs.${i}.txt goodloci.${i} > tmp.${i}
+
+if (( $( cat tmp.${i} | wc -l ) == 0)) ; then
+  echo "no excessively heterozygous contigs"
+else
+	mv tmp.${i} goodloci.${i} 
+fi
+
+) &
+done
+
+wait
+
+mylist=$(ls goodloci.* | tr "\n" "\t")
+
+#comm -12  <(sort $(echo $mylist | awk '{print $1}') ) <(sort $(echo $mylist | awk '{print $2}')) > common_loci
+
+# iteratively finds common loci of arbitrary number of files:
+mylist_array=( $mylist )
+sort ${mylist_array[1]} > common_loci
+
+for i in $mylist ;
+do
+echo $i
+comm -12 <(sort $i ) <(sort common_loci) > tmp
+mv tmp common_loci
+done
+
+wc -l common_loci
+
+cut -f1 ../$2 > keep.overall
+
+$vcftb/vcftools --vcf ../$1 --keep keep.overall --positions common_loci --recode --recode-INFO-all --out $4
+
+mv $4.recode.vcf ../
+
+# cleanup
+sleep 20
+cd ..
+rm -r ${scratchdirname}
+
+#####
+
+cat Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf | grep -v "#" | cut -f1 | sort | uniq | wc -l
+## 6706 remaining RAD-tags of length 126!
+
+
+############### ###############  ###############
+# 2. step:  build the ABC input files: ABCstats observed, spinputs, bpfiles.
+############### ###############  ###############
+
+module load python/2.7
+
+vcf=Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf
+
+tb=/cluster/project/gdc/people/schamath/Dianthus.2018-08/tools_used
+
+python $tb/vcf_to_genepop.aribtrary_npop.py --vcf ${vcf} --popfile popmap_for_vcf.txt
+
+# sites:	23312
+## genepop converted from .vcf for conversion to ms Hudson formats	n_loci:	23312	pops:	2	samples:	12, pop_1 = outgroup, pop_2 = D_sylvestris
+
+# lets use the best estimate available, from Silene latifolia:
+# Krasovec M, Chester M, Ridout K, Filatov DA. 2018. The Mutation Rate and the Age of the Sex 
+# Chromosomes in Silene latifolia. Current Biology 28: 1832-1838.e4.
+# mu = 7.31*10**(-9)
+
+python $tb/genepop_to_mscalc.arbitrary_npop.Dianthus.2018-08-29.py -gp Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt
+
+
+cp ${vcf}.genepop.txt.spinput.txt spinput.txt
+cat ${vcf}.genepop.txt.ms.txt  | python $tb/ms2stats.arbitrary_npop.counter.py | python $tb/ms2stats.arbitrary_npop.stats.py
+mv ABCstat.txt ${vcf}.ABCstat.txt
+rm spoutput.txt error.txt spinput.txt progress.log.txt
+
+
+############### ###############  ###############
+# 3. step:  simulate ABCstats under three different models
+############### ###############  ###############
+
+
+we work in the scratch, where data will be deleted after 15 days automatically!!
+
+mkdir /cluster/scratch/schamath/ABC_sims/
+cd /cluster/scratch/schamath/ABC_sims/
+
+## after running & cleanup, simulated data shall be stored/transferred/backed-up at:
+/cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_simulations
+
+
+	######################
+	# FRONTEND
+	######################
+
+# fetch the ABC_obs input data:
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data/*bpfile.txt ./
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data/*spinput.txt ./
+
+## modified accordingly for the bpfile and spinut inputs;, and also modified argfiles and prior drawer: Now can force N_ancient to be smaller OR larger than N_recent! => clearly distinct models for growth and decline are possible.
+
+# these are the files:
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/tools_used/argfile.* ./
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/tools_used/simulate.* ./
+
+
+## test: bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.constant
+## OK!
+
+### OK everything is in place, we are ready to build submission commands!
+# can build the cmds by hand, check this:
+
+
+bsub -J "const[1-30]%30" -W 4:0 -n 2 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.constant"
+
+bsub -J "exponential_decline[1-30]%30" -w "numdone(72116059, == 30)" -W 4:0 -n 2 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_decline"
+
+bsub -J "exponential_growth[1-30]%30" -w "numdone(72116060, == 30)" -W 4:0 -n 2 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth"
+
+---
+bsub -J "exponential_growth_both[1-30]%30" -W 4:0 -n 2 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth_both"
+
+------
+bsub -J "exponential_growth[1-158]%60" -W 4:0 -n 1 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth"
+
+------
+bsub -J "exponential_growth[159-346]%50" -W 4:0 -n 1 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth"
+
+
+	######################
+	# BACKEND
+	######################
+
+
+# check that they finished:
+rm list_bad_runs
+for output in $( ls -l -dir temp_* | awk '{print $10 }' ) ; do
+	statcnt=$( cat $output/ABCstat.txt | wc -l )
+	if (( $statcnt < 1335 )); then
+    	echo $output $statcnt
+    	echo $output >> list_bad_runs
+	fi
+done
+sleep 2
+while read line ; do
+	rm -r $line
+done <list_bad_runs
+rm list_bad_runs
+	
+# rename and collect outputs:
+
+for model in ddRAD_Dianthus.SI.constant ddRAD_Dianthus.SI.exponential_decline ddRAD_Dianthus.SI.exponential_growth ddRAD_Dianthus.SI.exponential_growth_both ; do
+	cat ./temp_${model}_1/ABCstat.txt > ./ABCstat.${model}.txt 
+	cat ./temp_${model}_1/parameters.txt > ./parameters.${model}.txt
+	for i in {2..30} ; do
+		cat ./temp_${model}_${i}/ABCstat.txt | tail -n +2 >> ./ABCstat.${model}.txt 
+		cat ./temp_${model}_${i}/parameters.txt | tail -n +2 >> ./parameters.${model}.txt
+	done
+wc -l ./ABCstat.${model}.txt 
+wc -l ./parameters.${model}.txt
+done
+
+##
+
+cp parameters.* /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_simulations/
+cp ABCstat.* /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_simulations/
+
+
+# OK, now cleanup!
+rm -r temp_*
+
+
+############### ###############  ###############
+# 4. step: ABC model choice using RF
+############### ###############  ###############
+
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_ABC_model_choice_1
+
+ln -s ../ddRAD_1_simulations/ABCstat.* ./
+ln -s ../ddRAD_1_simulations/parameters.* ./
+
+# get also the obs data:
+cp ../ddRAD_observed_data/Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.ABCstat.txt ./
+
+###### get Rscript etc.
+
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/tools_used/Rscript_RF_classification.ddRAD_Dianthus.SI.2018-08-29.txt ./
+
+## modified as desired:
+
+############
+# add R executables to PATH variable:
+PATH=$PATH:/cluster/project/gdc/people/schamath/tools/R-3.2.5/bin
+
+# install modified version of abcrf:
+#open R
+install.packages("/cluster/project/gdc/people/schamath/tools/abcrf_mod_for_specific_paral_NCORES.tar.gz", repos=NULL)
+q()
+
+### testrun with smaller RFs:
+Rscript Rscript_RF_classification.ddRAD_Dianthus.SI.2018-08-29.txt
+# problem: in a single simulation of ABCstat.ddRAD_Dianthus.SI.exponential_growth.txt, TajD values were returned as "--" double hyphen. 
+# checking the python code of ms2stats, there is no possibility that I cna see hw this result is obtained; shoul return na if cannot do it. Must be some weird and rare bug. 
+# R cannot deal with this, so just remove before importing to R:
+
+for i in $( ls ABCstat* ) ; do
+cat ${i} | sed '/--/d' > tmp
+sleep 1
+mv tmp ${i}
+done
+
+# after that it works!
+
+### now run the real script with longer time:
+
+
+echo "Rscript Rscript_RF_classification.ddRAD_Dianthus.SI.2018-08-29.txt" > modelchoice.sh
+
+bsub -J "modelchoice" -W 8:0 -n 4 -R "rusage[mem=4000]" -R "rusage[scratch=1048]" < modelchoice.sh
+
+
+############### ###############  ###############
+# 5. step: ABC parameter estimation for model Dianthus_exponential_growth
+############### ###############  ###############
+
+=> additional 450k sims for exponential_growth, code / jobs as above !
+
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_param_estim_exponential_growth
+
+# get stats, params
+cp ../ddRAD_1_simulations/ABCstat.ddRAD_Dianthus.SI.exponential_growth.450k.txt ./ABCstat.ddRAD_Dianthus.SI.exponential_growth.txt
+cp ../ddRAD_1_simulations/parameters.ddRAD_Dianthus.SI.exponential_growth.450k.txt ./parameters.ddRAD_Dianthus.SI.exponential_growth.txt
+
+############## cleaning in python!!
+
+sumstatsfile = "ABCstat.ddRAD_Dianthus.SI.exponential_growth.txt"
+paramsfile = "parameters.ddRAD_Dianthus.SI.exponential_growth.txt"
+
+bad_lines = []
+linecnt = 0
+outl = []
+with open(sumstatsfile, "r") as INF:
+	for line in INF:
+		linecnt += 1
+		if "--" in line:
+			continue
+			bad_lines.append(linecnt)
+		else:
+			outl.append(line)
+
+
+with open(sumstatsfile, "w") as OUTF:
+	OUTF.write("".join(outl))
+
+
+linecnt = 0
+outl = []
+with open(paramsfile, "r") as INF:
+	for line in INF:
+		linecnt += 1
+		if not linecnt in bad_lines:
+			outl.append(line)
+
+
+with open(paramsfile, "w") as OUTF:
+	OUTF.write("".join(outl))
+
+##############
+
+
+# add R executables to PATH variable:
+PATH=$PATH:/cluster/project/gdc/people/schamath/tools/R-3.2.5/bin
+
+## install current version of abc:
+install.packages("abc", repos = "http://stat.ethz.ch/CRAN/")
+
+## but it has a bug: cc4abc does not respect numnet argument but always runs default numnet=10
+# install modified/fixed version:
+install.packages("/cluster/project/gdc/people/schamath/tools/abc_modMS", repos=NULL)
+
+# fetch the ABCstat.obs data:
+cp ../ddRAD_observed_data/Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.ABCstat.txt ./
+
+cp ../tools_used/Rscript_param_estim.ddRAD_Dianthus.SI.exponential_growth.2018-08-31.txt ./
+#
+
+# AND RUN!
+
+echo "Rscript Rscript_param_estim.ddRAD_Dianthus.SI.exponential_growth.2018-08-31.txt ABCstat.ddRAD_Dianthus.SI.exponential_growth.txt parameters.ddRAD_Dianthus.SI.exponential_growth.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.ABCstat.txt exponential_growth.450k" > paramestim.sh
+
+bsub -J "pestim" -W 24:0 -n 1 -R "rusage[mem=16000]" -R "rusage[scratch=1048]" < paramestim.sh
+
+
+
+
+############### ###############  ###############
+# 6. step: posterior-predictive checks of the model fit for Dianthus_exponential_growth
+############### ###############  ###############
+
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_exponential_growth_post_pred_checks
+
+# get joint posterior distribution
+cp ../ddRAD_param_estim_exponential_growth/exponential_growth.450k.posterior_distributions.txt ./
+
+# get simulate script
+cp ../tools_used/simulate.ddRAD_Dianthus.2018-08-29.empirical_distr.sh ./
+
+
+# fetch the ABC_obs input data:
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data/*bpfile.txt ./
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data/*spinput.txt ./
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_observed_data/*ABCstat.txt ./
+
+# get argfile:
+cp ../tools_used/argfile.ddRAD_Dianthus.SI.exponential_growth.txt ./argfile.ddRAD_Dianthus.SI.exponential_growth.PPCheck.txt
+
+60*334 sims = c. 20k!
+##
+
+# modify the argfile for number of sims, simulate.sh for the post_distr, spinput and bpfile files, then call:
+
+mkdir /cluster/scratch/schamath/ABC_sims2/
+cd /cluster/scratch/schamath/ABC_sims2/
+
+cp /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_exponential_growth_post_pred_checks/* ./
+
+
+bsub -J "ppcheck[1-60]%60" -W 1:0 -n 1 -R "rusage[mem=500]" -R "rusage[scratch=1048]" "bash simulate.ddRAD_Dianthus.2018-08-29.empirical_distr.sh Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.bpfile.txt Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth.PPCheck exponential_growth.450k.posterior_distributions.txt"
+
+
+####### run c. 20k, then collect to plot!
+
+rm list_bad_runs
+for output in $( ls -l -dir temp_* | awk '{print $10 }' ) ; do
+	statcnt=$( cat $output/ABCstat.txt | wc -l )
+	if (( $statcnt < 335 )); then
+    	echo $output $statcnt
+    	echo $output >> list_bad_runs
+	fi
+done
+while read line ; do
+	rm -r $line
+done <list_bad_runs
+rm list_bad_runs
+
+
+
+for model in ddRAD_Dianthus.SI.exponential_growth.PPCheck ; do
+	cat ./temp_${model}_1/ABCstat.txt > ./ABCstat.${model}.txt 
+	cat ./temp_${model}_1/parameters.txt > ./parameters.${model}.txt
+	for i in {2..60} ; do
+		cat ./temp_${model}_${i}/ABCstat.txt | tail -n +2 >> ./ABCstat.${model}.txt 
+		cat ./temp_${model}_${i}/parameters.txt | tail -n +2 >> ./parameters.${model}.txt 
+	done
+wc -l ./ABCstat.${model}.txt 
+wc -l ./parameters.${model}.txt 
+done
+
+##
+cp ABCstat.ddRAD_Dianthus.SI.exponential_growth.PPCheck.txt /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_exponential_growth_post_pred_checks/
+cp parameters.ddRAD_Dianthus.SI.exponential_growth.PPCheck.txt /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_exponential_growth_post_pred_checks/
+
+# OK, now cleanup!
+rm -r temp_*
+
+
+
+############ plot!
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/ddRAD_1_exponential_growth_post_pred_checks/
+
+# -1. load dependencies
+
+library(abcrf)
+library(ggplot2)
+library(data.table)
+library(MASS)
+
+
+# http://www.cookbook-r.com/Graphs/Colors_%28ggplot2%29/#a-colorblind-friendly-palette
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+
+find_near_zero_variance_columns <- function(mydataframe) {
+	
+	# because lda.default() refuses to work with data that has < 1e-08 variance (tol)
+	# but lda are useful predictors and we want them
+	
+	bad_columns = c()
+	for ( i in seq(1, ncol(mydataframe) ) ) {
+		if ( var( mydataframe[,i] ) < 1e-07 ) {
+			bad_columns <- append(bad_columns, i)
+			}
+		}
+#	print(bad_columns)
+	return(bad_columns)
+	}
+
+
+# 0. import simulated statistics 
+
+
+models = c("ddRAD_Dianthus.SI.exponential_growth.PPCheck")
+
+# name for all outfiles:
+outfile_prefix <- paste(c("Dianthus", "ppcheck"), collapse = ".")
+
+for (i in models ) {
+
+INPUT <- fread((sprintf("ABCstat.%s.txt", i)), data.table = FALSE, na.strings="na")
+colnames(INPUT) <- make.names(colnames(INPUT))
+#  # remove zero-variance summary statistics: since segsites are fixed... bialsites_avg	bialsites_std
+# INPUT <- subset(INPUT, select = -bialsites_avg)
+# INPUT <- subset(INPUT, select = -bialsites_std)
+INPUT <- cbind(sprintf("%s", i), INPUT)
+colnames(INPUT)[1] <- "model"
+assign(sprintf("sumstats_%s", i), INPUT)
+
+}
+
+rm(INPUT)
+
+all_sumstats <- do.call(rbind, mget(ls(pattern='sumstats_')))
+all_sumstats <- data.frame(all_sumstats, row.names=NULL)
+all_sumstats <- na.omit(all_sumstats) # remove eventual NAs that result from little bugs in the generation of the input files
+
+all_sumstats_nomodel <- subset(all_sumstats, select = -model)
+
+# drop near zero-variance stats:
+tb_dropped_columns <- find_near_zero_variance_columns(all_sumstats_nomodel)
+if ( ! is.null(tb_dropped_columns) ) {
+all_sumstats_nomodel <- subset(all_sumstats_nomodel, select = -tb_dropped_columns)
+}
+
+# stitch back together and separate again:
+all_sumstats <- cbind(all_sumstats$model , all_sumstats_nomodel)
+colnames(all_sumstats)[1] <- "model"
+all_sumstats_nomodel <- subset(all_sumstats, select = -model)
+modelindex <- as.vector(all_sumstats$model)
+
+
+print("succesfully read input data")
+
+
+
+# 1.  import observed data:
+
+
+## import obs if there is any:
+
+obs_real <- fread("Dianthus.sylvestris_vs_threespecies.minpres0.8.2018-08-29.vcf.recode.vcf.ABCstat.txt", data.table = FALSE, na.strings="na")
+obs_real <- data.frame(obs_real)
+# drop the columns / statistics that have near zero variance in the reference table:
+if ( ! is.null(tb_dropped_columns) ) {
+obs_real <- subset(obs_real, select = -tb_dropped_columns)
+}
+
+
+
+# 2. check model overlap simplisitc, visually with histograms for each sumstat
+
+print("doing histograms")
+model <- modelindex
+
+pdf( sprintf("%s.sumstat_histograms.pdf", outfile_prefix) )
+
+for (stat in colnames(all_sumstats_nomodel) ) {
+
+mydat <- data.frame(modelindex, all_sumstats[[stat]] )
+
+histplot <- ggplot(mydat, aes( x = mydat[,2] , fill = model )) + geom_histogram(alpha = 0.6, aes(y = ..density..), position = 'identity') + xlab( stat ) + geom_vline(xintercept = obs_real[[stat]]) + scale_fill_manual(values=cbPalette)
+
+plot(histplot)
+
+} 
+dev.off()
+
+#### it looks like a pretty nice fit!!
+
+
+############### ###############  ###############
+# 7. step: CEN locus within D sylvestris: convert fasta alignment to input formats for coalescent simulations
+############### ###############  ###############
+
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/CEN_Dsyl_observed_data
+
+## the alignment of interest is:
+../4_dataset_instrogression_Low_CEN_1March2018/Contigs_2_RM_indels_Names.fasta
+
+## it has different samples / more samples than the RAD-data; but they come from the same pops.
+
+## which altitudinal variant do these sequences code for? file:
+../4_dataset_instrogression_Low_CEN_1March2018/Samples_Altitude_2.xlsx
+# exported as:
+which_protein_cluster_popmap.txt
+
+
+# construct a population map file:
+cat Contigs_2_RM_indels_Names.fasta | grep ">" | sed 's/>//g' > pop_and_indiv_map_fasta_alignment.txt
+
+# a) add one column indicating the population: easy, anything not named a different Dianthus species is Dsyl!
+# b) problem: the fasta contains all different sequences found:
+	=> two seq for heterozygous individuals
+	=> one seq for homozygous individuals
+	... clean up this mess in my conversion script, indicated by a third column in pop_and_indiv_map_fasta_alignment.txt
+	- unique individual ID in this column!	
+
+# then adjust python code to respect this
+OK it works! will read pop oder from pop file in order of appearance
+
+tb=/cluster/project/gdc/people/schamath/Dianthus.2018-08/tools_used
+python $tb/fasta_alignment_to_genepop.2018-08-30.py --fasta Contigs_2_RM_indels_Names.fasta --popfile pop_and_indiv_map_fasta_alignment.ready.txt
+
+#### now remove by hand the outgroup from the genepop:
+# =>    CEN_Dsyl.fasta.genepop.txt
+
+### convert further, but adjust locuslength in this script: 1212, as in the .fasta
+
+cp $tb/genepop_to_mscalc.arbitrary_npop.Dianthus.2018-08-29.py genepop_to_mscalc.arbitrary_npop.Dianthus.CEN.2018-08-29.py
+
+# lets use the best mu estimate available, from Silene latifolia:
+# Krasovec M, Chester M, Ridout K, Filatov DA. 2018. The Mutation Rate and the Age of the Sex 
+# Chromosomes in Silene latifolia. Current Biology 28: 1832-1838.e4.
+# mu = 7.31*10**(-9)
+
+python genepop_to_mscalc.arbitrary_npop.Dianthus.CEN.2018-08-29.py -gp CEN_Dsyl.fasta.genepop.txt
+
+
+cp CEN_Dsyl.fasta.genepop.txt.spinput.txt spinput.txt
+cat CEN_Dsyl.fasta.genepop.txt.ms.txt  | python $tb/ms2stats.arbitrary_npop.counter.py | python $tb/ms2stats.arbitrary_npop.stats.py
+mv ABCstat.txt CEN_Dsyl.fasta.ABCstat.txt
+rm spoutput.txt error.txt spinput.txt progress.log.txt
+
+## perfect, no changes required!! (However, no SFS available, as only defined for two or more pops.. If I want this, need to code it up!)
+
+## also get the haplotype stats:
+cp CEN_Dsyl.fasta.genepop.txt.spinput.txt spinput.txt
+cat CEN_Dsyl.fasta.genepop.txt.ms.txt | tee >(python $tb/ms2stats.single_pop.haplotype_stats.py) | python $tb/ms2stats.arbitrary_npop.counter.py | python $tb/ms2stats.arbitrary_npop.stats.py
+mv ABCstat.txt CEN_Dsyl.fasta.ABCstat.txt
+mv ABChaplostat.txt CEN_Dsyl.fasta.ABChaplostat.txt
+rm spoutput.txt error.txt spinput.txt progress.log.txt
+
+
+############### ###############  ###############
+# 8. step: get distribution of coalescence times of samples of Dsyl, given the ddRAD-data model fit (joint posterior for exponential_growth), and the sampling scheme of CEN 
+############### ###############  ###############
+
+# after only some small tweeks, my standard pipeline is capable of only single locus, single-pop !!
+# the trick is to set the number of samples from one pop, here outgroup resp. pop_1 resp- nsam1, to zero
+# this is done in the script draw_ms_priors_from_empirical_distribution.ddRAD_Dianthus.single_pop.2018-08-31.py
+#	while reading the bpfile for single-pop, a pseudo-line of nsam1 is filled with zeros!
+# ms: if no samples are taken from pop1, then it does not matter wether pop1 is specified in the model or not!
+# clean!
+
+cd /cluster/project/gdc/people/schamath/Dianthus.2018-08/CEN_coaltimes_exponential_growth
+
+cp ../CEN_Dsyl_observed_data/CEN_Dsyl.fasta.genepop.txt.bpfile.txt ./
+cp ../CEN_Dsyl_observed_data/CEN_Dsyl.fasta.genepop.txt.spinput.txt ./
+cp ../tools_used/argfile.ddRAD_Dianthus.SI.exponential_growth.txt ./argfile.ddRAD_Dianthus.SI.exponential_growth.CEN_scheme.txt
+cp ../ddRAD_param_estim_exponential_growth/exponential_growth.450k.posterior_distributions.txt ./
+
+bash $tb/simulate.2018-08-31.record_coaltimes.empirical_distr.single_pop_single_locus.sh CEN_Dsyl.fasta.genepop.txt.bpfile.txt CEN_Dsyl.fasta.genepop.txt.spinput.txt ddRAD_Dianthus.SI.exponential_growth.CEN_scheme exponential_growth.450k.posterior_distributions.txt 
+
+# making 100,000 runs, then plot this distribution:
+cp temp_ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_/ABCstat.txt ABCstat.ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_noisy_Ne.txt
+cp temp_ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_/parameters.txt parameters.ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_noisy_Ne.txt
+cp temp_ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_/coalescent_times.txt coalescent_times.ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_noisy_Ne.txt
+
+
+# R
+mydata <- read.table("coalescent_times.ddRAD_Dianthus.SI.exponential_growth.CEN_scheme_noisy_Ne.txt", header = FALSE)
+pdf("coalescent_times.noisy_Ne.pdf")
+plot(hist(mydata[,1], breaks = 1000))
+dev.off()
+
