@@ -1,0 +1,17 @@
+#BSUB -J "genomeScan_Chr[1-15]%15"
+#BSUB -n 1
+#BSUB -R "rusage[mem=2000]"
+#BSUB -W 12:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+#module load r/3.2.2 
+
+# Make output directory
+mkdir GenomeScan_resultsTables
+
+# Define job variable
+IDX=$LSB_JOBINDEX
+
+# Run genome scan R script
+Rscript 7.genomeScan_Chr1_15.R $IDX
