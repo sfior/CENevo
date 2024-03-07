@@ -19,8 +19,9 @@ ABC_coalmod_speciation_Ds_data_and_scripts
 
 **Haplotype data**
 
-Sequences and scripts for the CEN and TCF1 loci analyses
-
+CEN haploypes: Sequences and scripts
+TCF1 haploypes: Sequences and scripts
+misc: convert ptroteins to ACGT for Popart
 
 **Genome assembly tools**
 
