@@ -23,7 +23,7 @@ CEN haploypes: Sequences and scripts
 
 TCF1 haploypes: Sequences and scripts
 
-misc: convert ptroteins to ACGT for Popart
+misc: convert ptroteins to ACGT for Popart analyses
 
 **Genome assembly tools**
 
