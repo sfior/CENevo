@@ -1,0 +1,95 @@
+// ABCtoolbox priors and rules file
+// *********************
+
+// #### 11 parameter simple model ####
+
+// msms command line in inut file:
+// simArgs	240 no_loci -t theta -I 8 40 40 40 0 0 40 40 40 -n 1 fraction_N_highIsland1 -n 2 fraction_N_highIsland2 -n 3 fraction_N_highIsland3 -n 4 fraction_N_highcontinent -n 5 fraction_N_lowcontinent -n 6 fraction_N_lowIsland1 -n 7 fraction_N_lowIsland2 -n 8 fraction_N_lowIsland3 -m 1 4 m_island_continent -m 2 4 m_island_continent -m 3 4 m_island_continent -m 8 5 m_island_continent -m 7 5 m_island_continent -m 6 5 m_island_continent -m 4 5 m_highcontinent_lowcontinent -m 5 4 m_lowcontinent_highcontinent -em t_mig 4 5 m_highcontinent_lowcontinent_neutral -em t_mig 5 4 m_lowcontinent_highcontinent_neutral -thread 1
+
+[PARAMETERS]
+
+//	#isInt? #name	#dist.#min	#max	
+//	all N are in number of diploid individuals
+
+// 	Migration rates 
+//	In msms, m_i_j represents the fraction of subpopulation i that is made up of migrants from subpopulation j in forward time. Hence pastward we have the rate that a lineage moves from deme i to j as m_i_j. Here we fix the parameters (or unif +/- 0.1).
+0	log_m_island_continent	unif	0	5 output
+0	log_m_highcontinent_lowcontinent	unif	-3	3 output
+0	log_m_lowcontinent_highcontinent	unif	-3	3 output
+0	log_m_highcontinent_lowcontinent_neutral	fixed	2.58	output
+0	log_m_lowcontinent_highcontinent_neutral	fixed	2.52	output
+//	The log_m_highcontinent_lowcontinent_neutral and log_m_lowcontinent_highcontinent_neutral values above are taken from combined posteriors of the RECON2_FINAL_RUN2 model, and are the same for DSYL and DCAR.
+//	Times
+//	Time is in units of 4Ne generations. I.e. t = no_gens / 4Ne. With Ne = 10000 (msms default), t = 0.001 = 40 gens; t = 1 = 40000 gens; t = 100 = 4,000,000 gens, t = 31.6 = 1,265,000 gens. To get real number of time, need to rescale to continent Ne, i.e. by multiplying by ratio of 10000/NeContinent. Rather than reparametising here, we rescale post-hoc. With Ne = 100000, the equivalent of the above is: t = 0.0001 = 40 gens; t = 0.1 = 40000 gens; t = 10 = 4,000,000 gens. 
+//	Here we put a prior range from 40 gens to 1,265,000 gens (upper bound of dianthus radiation ca 1-2 million years ago)
+0	log_t_mig	unif	-3	1.5	output
+
+//	Effective population sizes
+//	Subpopulations are defined as fractions relative to N_effective. Here we fix the continent parameters (or unif +/- 0.1, as they are very peaky) and constrain (uniform dist) the N_island parameters +/- 0.4 from the mean (since they are less peaky) 
+0	log_N_highcontinent	unif	3	7	output
+0	log_N_lowcontinent	unif	3	7 output
+0	log_N_lowIsland1	unif	1	6 output
+0	log_N_lowIsland2	unif	1	6 output
+0	log_N_lowIsland3	unif	1	6 output
+0	log_N_highIsland1	unif	1	6 output
+0	log_N_highIsland2	unif	1	6 output
+0	log_N_highIsland3	unif	1	6 output
+
+//	Other fixed parameters
+//	Here, we'll want to keep sequence length fixed (so that ABCtoolbox can conveniently vary theta for us) and bounded to a certain maximum length (since we're operating under the assumption of no recombination within-locus and free recombination between-loci)
+1	sequence_length	fixed	5000	hide
+//	We define the mutation rate at a reasonable value (10-8). Modified: we use an estimate from Silene latifolia from Krasovec et al. 2018 (7.31 x 10-9), to be consistent with Mathias.
+0	mutation_rate	fixed	0.00000000731	hide
+//	Define the number of independent loci (iterations)
+1	no_loci	fixed	1	output
+
+
+[RULES]
+
+// Continent population sizes should be larger than island population sizes
+log_N_lowIsland1	<	log_N_lowcontinent
+log_N_lowIsland2	<	log_N_lowcontinent
+log_N_lowIsland3	<	log_N_lowcontinent
+//log_N_lowIsland1	<	log_N_highcontinent
+//log_N_lowIsland2	<	log_N_highcontinent
+//log_N_lowIsland3	<	log_N_highcontinent
+log_N_highIsland1	<	log_N_highcontinent
+log_N_highIsland2	<	log_N_highcontinent
+log_N_highIsland3	<	log_N_highcontinent
+//log_N_highIsland1	<	log_N_lowcontinent
+//log_N_highIsland2	<	log_N_lowcontinent
+//log_N_highIsland3	<	log_N_lowcontinent
+
+
+[COMPLEX PARAMETERS]
+
+//	Various
+0	theta = (4 * 10000 * mutation_rate * sequence_length)	output
+
+0	fraction_N_highIsland1 = pow10(log_N_highIsland1 - 4)	output
+0	fraction_N_highIsland2 = pow10(log_N_highIsland2 - 4)	output
+0	fraction_N_highIsland3 = pow10(log_N_highIsland3 - 4)	output
+0	fraction_N_lowIsland1 = pow10(log_N_lowIsland1 - 4)	output
+0	fraction_N_lowIsland2 = pow10(log_N_lowIsland2 - 4)	output
+0	fraction_N_lowIsland3 = pow10(log_N_lowIsland3 - 4)	output
+0	fraction_N_lowcontinent = pow10(log_N_lowcontinent - 4)	output
+0	fraction_N_highcontinent = pow10(log_N_highcontinent - 4)	output
+
+//	Rather than reparametising time parameters here, we rescale post-hoc (see above).
+0	t_mig = pow10(log_t_mig)	output
+
+0	m_lowcontinent_highcontinent_neutral = pow10(log_m_lowcontinent_highcontinent_neutral	- log_N_lowcontinent + 4) output
+0	m_highcontinent_lowcontinent_neutral = pow10(log_m_highcontinent_lowcontinent_neutral	- log_N_highcontinent + 4) output
+0	m_lowcontinent_highcontinent = pow10(log_m_lowcontinent_highcontinent	- log_N_lowcontinent + 4) output
+0	m_highcontinent_lowcontinent = pow10(log_m_highcontinent_lowcontinent	- log_N_highcontinent + 4) output
+0	m_island_continent = pow10(log_m_island_continent) output
+//	Here we don't rescale the m_island_continent parameter. The idea behind this is that we don't have the power to estimate both N and m, rather we have the power to estimate Nm. Since we're anyway only interested in Nm (and not really interested in the N or m parameter separately), by fixing N (here to Nref = 10000), we in essence estimate m. Rescaling of this parameter (m_island_continent) can be done post-analysis.
+
+// For migration rate parameters, we rescale to the effective population size of the (em)migration recipient population rather than global N_effective which is the default msms setting (we do this for m_lowcontinent_highcontinent and m_island_continent) to facilitate interpretation (i.e. the resulting transformed mij (or rather mij/4) will be the number of individuals of population i that are migrants from populations j). Recall, here mij=4Nmij 
+// We output population size as absolute rather than ratio.
+// Recall that msms scales (most) parameters by the global Ne, rather than the deme Ne. I.e. parameter values called into msms are global Ne scaled parameter values. However, for interpretation, we want deme scaled Ne. So we output this here, by transforming as such:
+// In msms: Mic = 4NeMic
+// We want outputed in the ABC results: Mic = 4NiMic ; recall that we scale by the recipient population
+// Mic(msms) = Mic(ABC)*(Ne/Ni)
+// In log, this is: exp ( log(Mic) - log(Ni) + log(Ne) ) , where Ne = 10000
+

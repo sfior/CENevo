@@ -1,0 +1,30 @@
+#!/bin/bash
+#BSUB -J "ABCtoolbox[1-100]%20"
+#BSUB -R "rusage[mem=2000]"
+#BSUB -n 1
+#BSUB -W 120:00
+#BSUB -o /cluster/scratch/lhirzi/ABCtoolbox_results/logs/log.%J.%I
+#BSUB -e /cluster/scratch/lhirzi/ABCtoolbox_results/errs/err.%J.%I
+
+module load java/1.8.0_91
+module load gdc
+module load python/3.6.1
+module load python/2.7.11
+
+IDX=$LSB_JOBINDEX
+#create a unique folder and store folders
+cd /cluster/scratch/lhirzi/ABCtoolbox_results
+mkdir run_5000_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DCAR_${IDX}
+
+# Define input/output files and directories
+input_file="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/1.ABCsampler_generateSims_inputFiles/1.Dsyl_ABCSampler_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DCAR.input"
+est_file="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/1.ABCsampler_generateSims_inputFiles/1.Dsyl_ABCPriors_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DCAR.est"
+obs_file="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_data_genomeWide_neutral/Dsyl/5kbFlankMaker_1kbFlankOthers/GW_Neutral_5000_1000_anchored_50kb_start1_end7194149_windowsize5000_M2_Q0_singleObs_221.obs"
+output_dir="/cluster/scratch/lhirzi/ABCtoolbox_results"
+
+# Run ABCSample
+cp {${input_file},${est_file},${obs_file}} ${output_dir}/run_5000_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DCAR_${IDX}
+cd run_5000_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DCAR_${IDX}
+
+ABCtoolbox ${input_file} addToSeed=${IDX}
+

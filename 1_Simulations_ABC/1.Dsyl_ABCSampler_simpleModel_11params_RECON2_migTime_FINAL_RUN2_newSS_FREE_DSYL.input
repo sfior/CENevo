@@ -1,0 +1,64 @@
+//	ABCtoolbox input file
+//	*********************
+//	To run, type: ABCtoolbox dianthus.input
+
+// To set up ABCtoolbox to perform simulations
+task	simulate
+
+// Define the type of sampler to be used (standard, MCMC or PMC)
+samplerType	standard
+// samplerType	MCMC
+
+// Define .est file, which defines the priors
+estName	1.Dsyl_ABCPriors_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DSYL.est
+
+// Define the file which contains the observed sumstats. This must be in the same form as the simulated sumstats output (i.e. 2 rows; first row headers, second row sumstat values; for multiple observations, append additional sumstat rows (1 row per observation; 1 master header))
+obsName	/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_data_genomeWide_neutral/Dsyl/5kbFlankMaker_1kbFlankOthers/GW_Neutral_5000_1000_anchored_50kb_start1_end7194149_windowsize5000_M2_Q0_singleObs_221.obs
+
+//	I assume this defines the final output file name?
+outName	simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_5000
+
+//	Number of simulations to perform
+numSims	10500
+
+//	Name of the simulation program. Must be an executable.
+simProgram	/cluster/project/gdc/people/lhirzi/msms/msms/bin/msms
+
+//	This is the msms command line we use ( HIGH (3xisland+1xcontinent(ghost)) - LOW (3xisland+1xcontinent(ghost)) model)
+//	msms 240 1 -N 10000 -t 5 -I 8 40 40 40 0 0 40 40 40 -n 1 0.2 -n 2 0.2 -n 3 0.2 -n 6 0.2 -n 7 0.2 -n 8 0.2 -m 4 1 2.0 -m 4 2 2.0 -m 4 3 2.0 -m 5 8 2.0 -m 5 7 2.0 -m 5 6 2.0 -m 5 4 2.0 -m 4 5 2.0 -thread 2 > output.txt
+//	We replace parameter (argument) values with tags defined in .est file, and define under simArgs (removing "msms"):
+simArgs	240 no_loci -t theta -I 8 40 40 40 0 0 40 40 40 -n 1 fraction_N_highIsland1 -n 2 fraction_N_highIsland2 -n 3 fraction_N_highIsland3 -n 4 fraction_N_highcontinent -n 5 fraction_N_lowcontinent -n 6 fraction_N_lowIsland1 -n 7 fraction_N_lowIsland2 -n 8 fraction_N_lowIsland3 -m 1 4 m_island_continent -m 2 4 m_island_continent -m 3 4 m_island_continent -m 8 5 m_island_continent -m 7 5 m_island_continent -m 6 5 m_island_continent -m 4 5 m_highcontinent_lowcontinent -m 5 4 m_lowcontinent_highcontinent -em t_mig 4 5 m_highcontinent_lowcontinent_neutral -em t_mig 5 4 m_lowcontinent_highcontinent_neutral -thread 1
+
+//	This redirects the standard output to a file
+simOutputRedirection SIMDATANAME
+
+//	This defines the name of the file with the simulated data written by the simulation program
+//	simDataName SIMDATANAME
+
+//	Name of the program calculating summary statistic
+sumStatProgram /cluster/project/gdc/people/lhirzi/ABCtoolbox_run/poolconverter.py
+
+//	Arguments to be passed to the program calculating summary statistics.
+//	If using command line
+//sumStatArgs	SIMDATANAME -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -l 5000 -p -i --error_method 4 --error_rate 0.001 --minallelecount 2 -f ABC
+sumStatArgs	SIMDATANAME -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -l 5000 -p -i --error_method 4 --error_rate 0.001 --minallelecount 2 --mindepth 10 --maxdepth 200 --sampler nbinom -c /cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_coverage_distribution/Dsyl_coverage_nbinomDist.txt -f ABC
+//sumStatArgs	SIMDATANAME -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -l 5000 -p -i --error_method 4 --error_rate 0.001 --minallelecount 2 --mindepth 10 --maxdepth 200 --sampler nbinom -c /cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_coverage_distribution/Dcar_coverage_nbinomDist.txt -f ABC
+//	this outputs a sumstats file with default name summary_stats_temp.txt, which is the default expected one in ABCtoolbox (thus no need to explicitly define the sumStatName tag below). Actually, it seems that the default expected one in ABCtoolbox is summary_stats-temp.txt, so we have to change and redefine:
+
+sumStatName summary_stats_temp.txt
+
+//	If using parameter files we can do as follows:
+//sumStatArgs	dianthus_test1.params
+//sumStatInputName	dianthus_test1.params 
+
+//	Verbose output (?)
+verbose
+
+//	Define name of log file
+logFile	simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_5000.log
+
+
+//Additional argument tags (required for ABC-MCMC)
+//numCaliSims 100
+//thresholdProp 0.1
+//rangeProp 1
