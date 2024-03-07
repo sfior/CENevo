@@ -1,0 +1,9 @@
+#BSUB -J "concat_genomeScan_sumStats"
+#BSUB -n 1
+#BSUB -R "rusage[mem=2000]"
+#BSUB -W 4:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+Rscript 9.Concat_genomeScan_sumStats.R
+
