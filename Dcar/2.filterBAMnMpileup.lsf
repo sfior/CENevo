@@ -1,0 +1,34 @@
+#!/bin/bash
+#BSUB -J "Bedtools[1-6]%6"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 1
+#BSUB -W 4:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+# Load dependencies
+module load gcc/4.9.2 bedtools/2.27.1 samtools/1.8
+
+output="./5000_1000"
+
+IDX=$LSB_JOBINDEX
+bam=`sed -n ${IDX}p <bam.filelist`
+
+name=$(basename ${bam} _realn_recal_sorted.bam)
+
+# Remove regions from a bam file using a bed file. Use bedtools intersect with the -v tag (only report those entries in A that have no overlap in B). ## -v -g with Dc_final and -f 1 with Dc_complement are equivalent.
+bedtools intersect -a ${bam} -b ${output}/Dc_final.bed -v -sorted -g Dcarth_assembly_homozygous.genome > ${output}/${name}_regions_removed_bedtoolsVg.bam
+
+# Sort and index BAM file (recall that your script pooled_sumstats_calculator_OBS.py requires positions (within scaffold) to be sorted)
+mkdir ${output}/tmp
+samtools sort -T ${output}/tmp/${name}_regions_removed_bedtoolsVg_sorted -o ${output}/${name}_regions_removed_bedtoolsVg_sorted.bam ${output}/${name}_regions_removed_bedtoolsVg.bam
+samtools index ${output}/${name}_regions_removed_bedtoolsVg_sorted.bam
+
+# Produce mpileup file from BAM
+samtools mpileup ${output}/${name}_regions_removed_bedtoolsVg_sorted.bam > ${output}/${name}_regions_removed_bedtoolsVg_sorted.mpileup
+
+# Filter mpileup file for anchored scaffolds (21369 scaffolds total; 1359 are anchored). Note: To get a unique list of all scaffolds: cut -f1 -d$'\t' Dcarth_assembly_homozygous.genome | sort | uniq 
+# We also filter for scaffolds above a certain length (e.g. here 50kb), and sort the scaffolds (e.g. here first by linkage group, abd then by position). Since we'll be running ABC scaffold-specific (not merging/concatenating scaffolds), the order of the scaffolds don't really matter however.
+# All anchored scaffolds are found in the file: Dcarth_all_anchored_scaffolds_v2.txt and anchored scaffolds > 50kb are found in the file: Dcarth_all_anchored_scaffolds_v2_above50000.txt 
+for i in $(cut -f1 -d$'\t' Dcarth_all_anchored_scaffolds_v2_above50000.txt | tail -n+2); do grep ${i} ${output}/${name}_regions_removed_bedtoolsVg_sorted.mpileup >> ${output}/${name}_regions_removed_bedtoolsVg_sorted_anchored.mpileup; done
+
