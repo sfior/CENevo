@@ -1,0 +1,15 @@
+#!/bin/bash
+#BSUB -J "ABC_est[1-16]%16"
+#BSUB -n 1
+#BSUB -W 2:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+# Define input and output variables
+IDX=$LSB_JOBINDEX
+input_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/4.Dsyl_ABCTransform.input.files"
+obs_directory="/cluster/project/gdc/people/lhirzi/GenomeScan/Dcar"
+ChrObsFile=`sed -n ${IDX}p <5_ABC_estimator_Chr_lists/Chr_name_list_Dcar_Chr1_16_RECON2_newSS_minDP10maxDP200_zeroSegSitesRemoved`
+STEM=$(basename "${ChrObsFile}" .zeroSegSitesRemoved.obs)
+
+ABCtoolbox ${input_folder}/Dsyl_ABCTransform_Chr_allScaffolds_windows5000.input numLinearComb=20 linearComb=PLSdef_concatenated_results_simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dcar_3RunsCombined_PLS20.txt input=${obs_directory}/Chr_${IDX}/${ChrObsFile} output=${obs_directory}/Chr_${IDX}/${STEM}_RECON2_newSS_minDP10maxDP200_Dcar_3RunsCombined_20PLS_zeroSegSitesRemoved.obs
