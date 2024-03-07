@@ -14,7 +14,7 @@ ABBA_BABA_data_and_scripts
 
 **Haplotype data**
 
-Sequences and scripts for the CEN and TCF1 loci
+Sequences and scripts for the CEN and TCF1 loci analyses
 
 
 **Molecular biology**
