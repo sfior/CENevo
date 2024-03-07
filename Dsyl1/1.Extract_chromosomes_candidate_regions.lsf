@@ -1,0 +1,36 @@
+#!/bin/bash
+#BSUB -J "extractRegionsBAM[1-6]%6"
+#BSUB -R "rusage[mem=1000]"
+#BSUB -n 2
+#BSUB -W 4:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc gcc/4.9.2 samtools/1.8
+
+IDX=$LSB_JOBINDEX
+bamfile=`sed -n ${IDX}p <bam.filelist`
+STEM=$(basename "${bamfile}" _realn_recal_sorted.bam);
+
+
+# Extract regions (CEN and TCF1) for Dcar
+# Chr1.scaffold4_size532381.CEN
+samtools view -b ${bamfile} scaffold4_size532381 > ${STEM}.Chr1.scaffold4_size532381.CEN.bam
+# Chr13.scaffold1_size1318325_1_614794.TCF1
+samtools view -b ${bamfile} scaffold1_size1318325_1_614794 > ${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.bam
+
+
+# Sort
+samtools sort -T ./tmp/${STEM}.Chr1.scaffold4_size532381.CEN.sorted -o ${STEM}.Chr1.scaffold4_size532381.CEN.sorted.bam ${STEM}.Chr1.scaffold4_size532381.CEN.bam
+samtools sort -T ./tmp/${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.sorted -o ${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.sorted.bam ${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.bam
+
+
+# Index
+samtools index ${STEM}.Chr1.scaffold4_size532381.CEN.sorted.bam
+samtools index ${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.sorted.bam
+
+
+# Remove temp files
+rm ${STEM}.Chr1.scaffold4_size532381.CEN.bam
+rm ${STEM}.Chr13.scaffold1_size1318325_1_614794.TCF1.bam
+
