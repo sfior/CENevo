@@ -1,0 +1,22 @@
+#!/bin/bash
+#BSUB -J "sumstats_calculator_OBS[1-1]%1"
+#BSUB -R "rusage[mem=60000]"
+#BSUB -n 1
+#BSUB -W 12:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc gcc/4.9.2 python/3.6.1
+
+# Input directory for Dsyl:
+working_dir="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_data_genomeWide_neutral/Dsyl/5kbFlankMaker_1kbFlankOthers"
+# Input directory for Dcar:
+#working_dir="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Observed_data_genomeWide_neutral/Dcar/5kbFlankMaker_0kbFlankOthers"
+
+cd ${working_dir}
+
+#cp ../../../{sumstatscalc.py,pooled_sumstats_calculator_OBS.py,BAM2AlleleFreqs.py} ${working_dir}
+
+# Calculate observed sumstats (GENOME-WIDE, NEUTRAL REGIONS, 5000kbMakerFlanked-1000kbOtherFlanked, anchored scaffolds > 50kb): 
+#python pooled_sumstats_calculator_OBS.py genomeWide_5000_1000_anchored50_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o GW_Neutral_5000_1000_anchored_50kb -f ABC -r multiple --windowSize 5000 --scaffold --pooled
+python pooled_sumstats_calculator_OBS.py genomeWide_5000_1000_anchored50_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o GW_Neutral_5000_1000_anchored_50kb -f ABC -r multiple --mindepth 10 --maxdepth 200 --windowSize 5000 --scaffold --pooled
