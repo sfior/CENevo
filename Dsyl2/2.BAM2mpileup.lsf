@@ -1,0 +1,14 @@
+#!/bin/bash
+#BSUB -J "BAM2mpileup[1-30]%30"
+#BSUB -R "rusage[mem=2000]"
+#BSUB -n 1
+#BSUB -W 12:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc gcc/4.9.2 samtools/1.8
+
+IDX=$LSB_JOBINDEX
+bamfile=`sed -n ${IDX}p <extracted.bam.filelist.Chr16.2`
+STEM=$(basename "${bamfile}" .sorted.bam)
+samtools mpileup ${bamfile} > ${STEM}.mpileup
