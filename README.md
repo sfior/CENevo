@@ -42,4 +42,4 @@ ABBA_BABA_data_and_scripts
 
 **Population genomics**
 
-Environment associations TCF1: test association with freezing tolerance for D. selvestris and D. carthusianorum
+Environment associations TCF1: test association with freezing tolerance
