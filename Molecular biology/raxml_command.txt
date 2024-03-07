@@ -1,0 +1,1 @@
+raxmlHPC-AVX -f a -m PROTGAMMAAUTO -s FT_Protein_alignment_trimmed.phy -p 12345 -x 12345 -# 1000  -n output
