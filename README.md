@@ -22,6 +22,11 @@ ABC_coalmod_speciation_Ds_data_and_scripts
 Sequences and scripts for the CEN and TCF1 loci analyses
 
 
+**Genome assembly tools**
+
+Scaffold names and extract annotation for candidate loci
+
+
 **Molecular biology**
 
 Sequences used in transformation experiment and alignment of FT gene family
