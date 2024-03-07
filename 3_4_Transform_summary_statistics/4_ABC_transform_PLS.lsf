@@ -1,0 +1,14 @@
+#!/bin/bash
+#BSUB -J "ABC_transform"
+#BSUB -n 1
+#BSUB -W 2:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+input_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/4.Dsyl_ABCTransform.input.files"
+
+ABCtoolbox 4.Dsyl_ABCTransform.input
+#ABCtoolbox ${input_folder}/Dsyl_ABCTransform_CEN_windows5000_candidate.input
+#ABCtoolbox ${input_folder}/Dsyl_ABCTransform_TCF1_windows5000_candidate.input
+#ABCtoolbox ${input_folder}/Dcar_ABCTransform_FT_windows5000_candidate.input
+#ABCtoolbox ${input_folder}/Dcar_ABCTransform_TCF1_windows5000_candidate.input

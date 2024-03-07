@@ -1,0 +1,13 @@
+#!/bin/bash
+#BSUB -J "find_PLS"
+#BSUB -n 1
+#BSUB -R "rusage[mem=60000]"
+#BSUB -W 72:00
+#BSUB -o /cluster/project/gdc/people/lhirzi/ABCtoolbox_run/logs/log.%J.%I
+#BSUB -e /cluster/project/gdc/people/lhirzi/ABCtoolbox_run/errs/err.%J.%I
+
+#module load r/3.2.2 
+
+#output_dir="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run"
+
+Rscript 3_find_pls.r concatenated_results_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_DSYL.txt
