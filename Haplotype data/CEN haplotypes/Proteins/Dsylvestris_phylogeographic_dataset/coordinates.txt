@@ -1,0 +1,164 @@
+Population name (simplified)	Species	Latitude 	Longitude	Elevation
+Twann	Dianthus sylvestris Wulfens	47.093786	7.152245	490
+Onnens	Dianthus sylvestris Wulfens	46.844580	6.684666	488
+Enges	Dianthus sylvestris Wulfens	47.047807	7.012920	673
+La_Dole	Dianthus sylvestris Wulfens	46.424684	6.104079	1456
+Pierre_a_Coutiau	Dianthus sylvestris Wulfens	46.580821	6.288020	1608
+Le_Moleson	Dianthus sylvestris Wulfens	46.536971	7.003558	1820
+Rochers_de_Naye	Dianthus sylvestris Wulfens	46.431069	6.979597	1975
+Biasca	Dianthus sylvestris Wulfens	46.359350	8.981270	670
+San_Carlo	Dianthus sylvestris Wulfens	46.424250	8.518020	1420
+Rochers_des_Rayes	Dianthus sylvestris Wulfens	46.527342	7.208130	1790
+L_Aupateri	Dianthus sylvestris Wulfens (some longicaulis traits)	46.496083	7.139252	1530
+Schwarzenmatt	Dianthus sylvestris Wulfens	46.634093	7.349496	1220
+Col_de_Sonlomont	Dianthus sylvestris Wulfens (some longicaulis traits)	46.443190	7.063911	1650
+Mangart	Dianthus sylvestris Wulfens	46.443540	13.639610	2053
+Lago_di_Fedaia	Dianthus sylvestris Wulfens	46.466060	11.859290	2220
+Mustair_Low	Dianthus sylvestris Wulfens	46.632160	10.446993	1300
+Soca_Low	Dianthus sylvestris Wulfens	46.404810	13.705320	1036
+Soca_High	Dianthus sylvestris Wulfens	46.412170	13.693990	1632
+Les_Chapelles	Dianthus sylvestris Wulfens	45.587300	6.713970	1432
+Pralognan_la_Vanoise	Dianthus sylvestris Wulfens	45.314010	6.680270	1986
+L_Ecot	Dianthus sylvestris Wulfens	45.385540	7.099690	2090
+Lac_du_Mont_Cenis	Dianthus sylvestris Wulfens	45.209400	6.969830	1938
+Nevache	Dianthus sylvestris Wulfens	45.026640	6.601780	1871
+Abries	Dianthus sylvestris Wulfens	44.786480	6.937390	1670
+Saint_Paul_sur_Ubaye	Dianthus sylvestris Wulfens	44.594700	6.899970	2343
+Bayasse	Dianthus sylvestris Wulfens	44.307670	6.746490	1868
+Pont	Dianthus sylvestris Wulfens	45.525360	7.191370	2130
+Lago_di_Loie	Dianthus sylvestris Wulfens	45.586816	7.412529	2365
+Pievescola	Dianthus sylvestris ssp?	43.3200	11.1081	230
+Travale	Dianthus sylvestris ssp?	43.1953	11.0348	480
+Iesa	Dianthus sylvestris ssp?	43.0947	11.2459	340
+Podere_il_Santo	Dianthus sylvestris ssp?	43.0833	11.3000	275-350
+Murlo	Dianthus sylvestris ssp?	43.1326	11.3108	303
+Capraia	Dianthus sylvestris ssp?	43.1868	11.2655	178
+Roccatederighi	Dianthus sylvestris ssp?	43.0384	11.0818	588-590
+Cornate_di_Gerfalco	Dianthus sylvestris ssp?	43.1484	10.9784	670-698
+Bagno_di_Roselle	Dianthus sylvestris ssp?	42.8000	11.1500	120
+Impruneta	Dianthus sylvestris ssp?	43.6667	11.1600	280
+Campiglia_Marittima	Dianthus sylvestris ssp?	43.0845	10.6052	233
+Lucchio	Dianthus sylvestris ssp?	44.0377	10.7161	700-900
+Riparbella	Dianthus sylvestris ssp?	43.3763	10.6040	320
+Pieve_Santo_Stefano	Dianthus sylvestris ssp?	43.5667	12.0333	385
+Monte_Prinzera	Dianthus sylvestris ssp?	44.6333	10.0667	590-600
+Monte_Ventasso	Dianthus sylvestris ssp?	44.3667	10.2833	1680
+Monte_Scalocchio	Dianthus sylvestris ssp?	44.2667	10.2667	1760
+Carpegna	Dianthus sylvestris ssp?	43.7833	12.3667	700-800
+Monte_Falcinello	Dianthus sylvestris ssp?	44.1333	9.9500	140
+Val_di_Susa	Dianthus sylvestris Wulfens	45.0980	7.3430	880
+Monte_Tancia	Dianthus sylvestris ssp?	42.3105	12.7488	900
+Konitsa	Dianthus sylvestris ssp?	40.0700	20.8378	900-950
+Legn_Marsch_Scuol	Dianthus sylvestris Wulfens	46.814970	10.353396	1080-1280
+Flanuoa	Dianthus sylvestris Wulfens	46.776162	10.175727	1490-1540
+Staziun	Dianthus sylvestris Wulfens	46.766954	10.108454	1440-1500
+Umblin	Dianthus sylvestris Wulfens	46.706940	10.086520	1480-1535
+Clastra_San_Gian	Dianthus sylvestris Wulfens	46.632506	10.446777	1280-1305
+Kastelbell	Dianthus sylvestris Wulfens	46.635661	10.912238	690-770
+S_chalambert	Dianthus sylvestris Wulfens	46.810229	10.397717	2230-2320
+Val_da_la_Stura	Dianthus sylvestris Wulfens	46.775287	10.425932	2160-2365
+Mot_Ajuz	Dianthus sylvestris Wulfens	46.784473	10.349123	2270-2450
+Muot_da_l_Hom	Dianthus sylvestris Wulfens	46.785515	10.198479	2080-2210
+Uert	Dianthus sylvestris Wulfens	46.782457	10.119050	2090-2115
+Laschadurella	Dianthus sylvestris Wulfens	46.711559	10.167212	2340-2410
+Pass_da_Costainas	Dianthus sylvestris Wulfens	46.644369	10.371627	2260-2340
+Parai_da_Lu	Dianthus sylvestris Wulfens	46.632683	10.370992	2385-2445
+Pontresina	Dianthus sylvestris Wulfens	46.469404	10.014320	2520-2545
+Marmore	Dianthus sylvestris Wulfens	46.419736	9.772509	2230-2265
+Giand_Alva	Dianthus sylvestris Wulfens	46.411879	9.782580	2430-2440
+Mot_San_Jon	Dianthus sylvestris Wulfens	46.769617	10.315555	2320-2340
+Mot_Lischana	Dianthus sylvestris Wulfens	46.775712	10.330477	2050-2300
+Schwarzsee	Dianthus sylvestris Wulfens	45.993333	7.719722	2350
+Chalbermatten	Dianthus sylvestris Wulfens	46.008333	7.690000	2100
+Gornergrat	Dianthus sylvestris Wulfens	45.979444	7.776111	2740
+Alpe_Lago	Dianthus sylvestris Wulfens	46.547222	8.666667	2150
+Stellisee	Dianthus sylvestris Wulfens	46.015000	7.799167	2600
+Hannig	Dianthus sylvestris Wulfens	46.110278	7.908889	2200
+Liggi	Dianthus sylvestris Wulfens	46.074167	7.988889	2350
+Mattmark	Dianthus sylvestris Wulfens	46.036944	7.952500	2340
+Triftgrat	Dianthus sylvestris Wulfens	46.123889	7.958333	2500
+Simplonpass	Dianthus sylvestris Wulfens	46.206111	8.074444	2280
+Seelisberg	Dianthus sylvestris Wulfens	46.962222	8.588611	840
+Zeneggen	Dianthus sylvestris Wulfens	46.272500	7.876667	940
+Leuk	Dianthus sylvestris Wulfens	46.31229535	7.662910512	916
+Oberu	Dianthus sylvestris Wulfens	46.34570266	7.52835741	2011
+Chlingenstock	Dianthus sylvestris Wulfens	46.957393	8.660853	1850
+Findeln	Dianthus sylvestris Wulfens	46.01401849	7.76342651	2180
+Varen	Dianthus sylvestris Wulfens	46.318317	7.620999	768
+Challer	Dianthus sylvestris Wulfens	46.341447	7.595151	2062
+Niedergampel	Dianthus sylvestris Wulfens	46.313216	7.707131	688
+Tsanfleuron	Dianthus sylvestris Wulfens	46.322755	7.296057	2110
+Lac_de_Mauvoisin	Dianthus sylvestris Wulfens	45.992624	7.344463	2280
+Saviese	Dianthus sylvestris Wulfens	46.235256	7.340141	746
+Saxon	Dianthus sylvestris Wulfens	46.140278	7.164058	570
+Visitor	Dianthus sylvestris Wulfens et Jacq. Ssp bertisceus Rech.	42.614806	19.893222	1850
+Durmitor	Dianthus sylvestris Wulfens et Jacq.	43.098944	19.051111	1925
+Mramorje	Dianthus sylvestris Wulfens et Jacq. agg. 	42.925167	19.023417	1610
+Parun	Dianthus sylvestris Wulfens et Jacq. agg. 	42.322222	19.656944	1300
+Dolina_Glinscice	Dianthus sylvestris Wulfens et Jacq. Ssp tergestinus (Rchb.)	45.619583	13.873778	130
+Geteillon	Dianthus sylvestris Wulfens	46.356850	7.005067	2010
+Sinlio	Dianthus sylvestris Wulfens	46.121950	7.039067	900
+Liddes	Dianthus sylvestris Wulfens	45.984433	7.196783	1530
+Bourg_St_Pierre	Dianthus sylvestris Wulfens	45.946183	7.212333	1780
+Orsieres	Dianthus sylvestris Wulfens	46.029533	7.140733	990
+Hauderes	Dianthus sylvestris Wulfens	46.081983	7.517500	1595
+Evolene	Dianthus sylvestris Wulfens	46.123067	7.486950	1520
+Euseigne	Dianthus sylvestris Wulfens	46.162883	7.440933	1020
+Gandispitz	Dianthus sylvestris Wulfens	46.91725	8.512567	2013
+Pralognan_la_Vanoise1	Dianthus sylvestris Wulfens	45.38293	6.72055	1438
+Pralognan_la_Vanoise2	Dianthus sylvestris Wulfens	45.38830	6.74448	1958
+Champagny_en_Vanoise	Dianthus sylvestris Wulfens	45.44933	6.78454	1680
+Pralognan_la_Vanoise3	Dianthus sylvestris Wulfens	45.38244	6.71955	1420
+Morano	Dianthus sylvestris subsp. longicaulis	39.847182	16.133714	585
+Civita	Dianthus sylvestris subsp. longicaulis	39.829403	16.303786	604
+Saracena	Dianthus sylvestris subsp. longicaulis	39.806289 	16.139899	909
+Mt_Caramolo	Dianthus cfr. brachycalyx	39.798429	16.092498	1824
+Mt_Dolcedorme	Dianthus cfr. brachycalyx	39.897224	16.21016	2134
+Mt_Serra_del_Prete	Dianthus cfr. brachycalyx	39.919789	16.158453	2181
+Lac_des_Mesches	Dianthus sylvestris Wulfens	44.07035	7.51683	1453
+Saint_Vallier_de_Thiey	Dianthus sylvestris subsp. longicaulis	43.7039	6.81506	900
+Mont_Chiran	Dianthus sylvestris subsp. longicaulis	43.86301	6.32103	1705
+Veaux	Dianthus sylvestris subsp. longicaulis	44.21972	5.2379	569
+Ceuse	Dianthus sylvestris Wulfens (some longicaulis traits)	44.49908	5.9504	1803
+Sahune	Dianthus sylvestris Wulfens (some longicaulis traits)	44.428779	5.277236	428
+La_Sagne	Dianthus sylvestris Wulfens (some longicaulis traits)	44.81554	6.55708	1016
+Brison	Dianthus sylvestris Wulfens (some longicaulis traits)	45.74356	5.88787	206
+Monte_San_Salvatore	Dianthus sylvestris Wulfens	45.97535	8.94437	828
+Monte_Caslano	Dianthus sylvestris Wulfens	45.96053	8.88331	332
+Bre	Dianthus sylvestris Wulfens	46.015366	8.997327	843
+Weissenbach	Dianthus sylvestris Wulfens	46.78907	11.34521	1774
+Polsa	Dianthus sylvestris Wulfens	45.76645	10.93891	1350
+Rifugio_Graziani	Dianthus sylvestris Wulfens	45.79879	10.89384	1566
+Forte_San_Marco_Low	Dianthus sylvestris Wulfens	45.58667	10.82507	235
+Forte_San_Marco_High	Dianthus sylvestris Wulfens	45.60342	10.83646	500
+Lumini	Dianthus sylvestris Wulfens	45.6323	10.78035	1051
+Dinaric_Fortress	Dianthus sylvestris Wulfens (some longicaulis traits)	44.01656	16.41536	706
+Dubrava	Dianthus sylvestris Wulfens	43.50821	16.62378	471
+Vlaka	Dianthus sylvestris Wulfens	42.73623	18.10106	525
+Kapetanovo_Jezero	Dianthus sylvestris Wulfens	42.81644	19.23043	1741
+Mostar	Dianthus sylvestris Wulfens	43.24777	17.96645	827
+Rotspitze	Dianthus sylvestris Wulfens	47.01897	12.24097	2070
+Grossglockner	Dianthus sylvestris Wulfens	47.06573	12.75647	2104
+Laserzsee	Dianthus sylvestris Wulfens	46.76672	12.80041	2232
+Thumel	Dianthus sylvestris Wulfens	45.53495	7.10119	1940
+Santis	Dianthus sylvestris Wulfens	47.25076	9.44518	1512
+Poschiavo	Dianthus sylvestris Wulfens	46.39029	10.10207	1874
+Kotor	Dianthus sylvestris Wulfens	42.42223	18.7855	629.7
+Valbone	Dianthus sylvestris	42.4101	19.8174	1530-1800
+Cogne1	Dianthus sylvestris Wulfens	45.598806	7.425444	1889
+Cogne2	Dianthus sylvestris Wulfens	45.634333	7.381611	1988
+Fiuors	Dianthus sylvestris Wulfens	46.443088	9.774816	1800
+Flaz	Dianthus sylvestris Wulfens	46.524485	9.863081	1720
+Tschessa_Granda	Dianthus sylvestris Wulfens	46.619239	9.995342	1700
+Dossa	Dianthus sylvestris Wulfens	46.771967	10.200405	1425
+Resgia	Dianthus sylvestris Wulfens	46.833982	10.401648	1100
+Gurlaina	Dianthus sylvestris Wulfens	46.789858	10.296336	1220
+Chaschauna	Dianthus sylvestris Wulfens	46.592626	10.037821	2500
+Mot_dal_Luf	Dianthus sylvestris Wulfens	46.894556	10.320948	2240
+Madals	Dianthus sylvestris Wulfens	46.821028	10.432407	2150
+Spi_da_la_Padavanna	Dianthus sylvestris Wulfens	46.832559	10.438952	2270
+Spi_da_la_Chaldera	Dianthus sylvestris Wulfens	46.830329	10.438172	2260
+Sneznik	Dianthus sylvestris Wulfens	45.565373	14.318294	1000
+Komen	Dianthus sylvestris ssp tergestinus	45.841944	13.772181	294
+Ucka	Dianthus sylvestris agg.	45.2842	14.20205	1400
+Vela_Draga	Dianthus sylvestris agg.	45.316517	14.169567	470
