@@ -3,11 +3,9 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC_coalmod_speciation_Ds_data_and_scripts
+ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. slyvestris and the time to coalescence at the DsCEN locus from a geeographically widespread sample of haplotypes
 
-- Appoximate Bayesian Computation with coalescent simulations, model choice and parameter inference under the best model, with the aim to estimate the speciation time for Ds (Dianthus slyvestris) from its sister lineage 
-- simulations under the best-fitting model to estimate the time to coalescence at the DsCEN locus from a geeographically widespread sample of haplotypes
-
+Onset of selection: XXXX
 
 **Ecology**
 
