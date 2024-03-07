@@ -32,7 +32,7 @@ Scaffold names and extract annotation for candidate loci
 
 **Molecular biology**
 
-Sequences used in Arabidopsis transformation experiment and alignment of FT gene family
+Transcritps used in Arabidopsis transformation experiment and alignment of FT gene family
 
 
 
