@@ -17,6 +17,11 @@ ABBA_BABA_data_and_scripts
 Sequences and scripts for the CEN and TCF1 loci
 
 
+**Molecular biology**
+
+Sequences used in transformation experiment and alignment of FT gene family
+
+
 **Ecology**
 
 01 Phenotypic divergence measured in common garden
