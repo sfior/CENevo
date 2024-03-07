@@ -1,0 +1,21 @@
+#!/bin/bash
+#BSUB -J "ABCtoolbox[1-15]%15"
+#BSUB -R "rusage[mem=65000]"
+#BSUB -n 1
+#BSUB -W 12:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc gcc/4.9.2 python/3.6.1
+
+IDX=$LSB_JOBINDEX
+
+cd Chr_${IDX}
+#STEM=$(basename "Chr${IDX}_filelist.txt" _filelist.txt)
+cp ../{pooled_sumstats_calculator_OBS.py,sumstatscalc.py,BAM2AlleleFreqs.py} .
+
+# Calculate observed summary statistics (per chromosome)
+#python pooled_sumstats_calculator_OBS.py Chr${IDX}_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o Chr${IDX}_allScaffolds_FullSS -f ABC -r multiple --windowSize 5000 --scaffold --pooled
+#python pooled_sumstats_calculator_OBS.py Chr${IDX}_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o Chr${IDX}_allScaffolds_FullSS -f ABC -r multiple --mindepth 10 --maxdepth 200 --windowSize 5000 --scaffold --pooled
+#python pooled_sumstats_calculator_OBS.py Chr${IDX}_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o Chr${IDX}_allScaffolds_FullSS -f ABC -r multiple --mindepth 10 --maxdepth 200 --windowSize 5000 --windowStep 1000 --scaffold --pooled
+python pooled_sumstats_calculator_OBS.py Chr${IDX}_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o Chr${IDX}_allScaffolds_FullSSnewSS2 -f ABC -r multiple --mindepth 10 --maxdepth 200 --windowSize 5000 --windowStep 1000 --scaffold --pooled

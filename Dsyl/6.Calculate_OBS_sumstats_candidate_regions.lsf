@@ -1,0 +1,27 @@
+#!/bin/bash
+#BSUB -J "Calc_obs_sumstats[1-1]%1"
+#BSUB -R "rusage[mem=5000]"
+#BSUB -n 1
+#BSUB -W 12:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc gcc/4.9.2 python/3.6.1
+
+IDX=$LSB_JOBINDEX
+
+
+cd TCF1
+#cp ../{pooled_sumstats_calculator_OBS.py,sumstatscalc.py,BAM2AlleleFreqs.py} .
+
+# Calculate observed summary statistics (per chromosome)
+#python pooled_sumstats_calculator_OBS.py TCF1_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o TCF1_Chr13_scaffold1_size1318325_1_614794_FullSS -f ABC --startPos 210891 --endPos 220933 --windowSize 5000 -r single --pooled
+python pooled_sumstats_calculator_OBS.py TCF1_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o TCF1_Chr13_scaffold1_size1318325_1_614794_FullSS -f ABC --startPos 210891 --endPos 220933 --mindepth 10 --maxdepth 200 --windowSize 5000 -r single --pooled
+
+
+cd ../CEN
+#cp ../{pooled_sumstats_calculator_OBS.py,sumstatscalc.py,BAM2AlleleFreqs.py} .
+
+# Calculate observed summary statistics (per chromosome)
+#python pooled_sumstats_calculator_OBS.py CEN_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o CEN_Chr1_scaffold4_size532381_FullSS -f ABC --startPos 177008 --endPos 203502 --windowSize 5000 -r single --pooled
+python pooled_sumstats_calculator_OBS.py CEN_filelist.txt -d 40 -d 40 -d 40 -d 40 -d 40 -d 40 -q 0 -m 2 -o CEN_Chr1_scaffold4_size532381_FullSS -f ABC --startPos 177008 --endPos 203502 --mindepth 10 --maxdepth 200 --windowSize 5000 -r single --pooled
