@@ -1,0 +1,25 @@
+#!/bin/bash
+#BSUB -J "ABC_est"
+#BSUB -n 1
+#BSUB -R "rusage[mem=5000]"
+#BSUB -W 72:00
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+module load gdc
+module load new gcc/6.2.0
+
+# Define directories and input files
+new_ABC_version_dir="/cluster/project/gdc/people/lhirzi/abctoolbox"
+#input_file="5.Dsyl_ABCEstimator_PLS.input"
+input_file="5.Dsyl_ABCEstimator_PLS_indrepMCMC.input"
+output_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Estimation_results_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_CEN_DSYL"
+#output_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Estimation_results_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_TCF1_DSYL"
+#output_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Estimation_results_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_TCF1_DCAR"
+#output_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run/Estimation_results_simpleModel_11params_RECON2_migTime_FINAL_RUN2_newSS_FREE_FT_DCAR"
+
+mkdir ${output_folder}
+
+#${new_ABC_version_dir}/ABCtoolbox 5.Dsyl_ABCEstimator_PLS.input outputPrefix=${output_folder}/ABC_estimation_simpleModel_11params_RECON2_PLS10_gW_ logFile=${output_folder}/ABC_estimation_simpleModel_11params_RECON2_PLS10_gW.log
+${new_ABC_version_dir}/ABCtoolbox ${input_file}
+#${new_ABC_version_dir}/ABCtoolbox 5.Dsyl_ABCEstimator_PLS_joint_multiCore.input
