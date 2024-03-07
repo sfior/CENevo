@@ -1,0 +1,1 @@
+These scripts in "2. Calculate summary statistics" continue directly from "1. Extract chromosome windows".
