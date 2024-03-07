@@ -1,0 +1,60 @@
+#!/bin/bash
+#BSUB -J "ABC_EST[4-4]%1"
+#BSUB -n 1
+#BSUB -R "rusage[mem=7000]"
+#BSUB -W 120:00
+#BSUB -o /cluster/scratch/lhirzi/ABCEstimator/logs/log.%J.%I
+#BSUB -e /cluster/scratch/lhirzi/ABCEstimator/errs/err.%J.%I
+
+# Load modules, define job number
+module load gdc python/3.6.1
+module load new gcc/6.2.0
+IDX=$LSB_JOBINDEX
+
+# Define global directories and input files
+species="Dsyl"
+new_ABC_version_dir="/cluster/project/gdc/people/lhirzi/abctoolbox"
+input_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run"
+split_file="${input_folder}/split_obs.py"
+input_file="${input_folder}/5.Dsyl_ABCEstimator_PLS_joint_multiCore.input"
+#input_file="${input_folder}/5.Dsyl_ABCEstimator_PLS_jointMCMC_multiCore.input"
+scratch="/cluster/scratch/lhirzi/ABCEstimator"
+run_prefix="simpleModel_11params_RECON2_newSS_minDP10maxDP200_${species}_3RunsCombined_PLS20"
+
+# Loop over chromosome (i.e. perform sequentially over chromosomes)
+for CHR in $(seq 16 16); do
+
+# Define chromosome directories and input files
+output_prefix="Estimation_results_${run_prefix}_Joint_retSims10000_gridPoints33_FINAL_Chr"
+output_master_folder=${scratch}/${output_prefix::-4}
+output_folder=${output_master_folder}/${output_prefix}${CHR}
+mkdir ${output_master_folder} ${output_folder}
+
+obs_master_dir="/cluster/project/gdc/people/lhirzi/GenomeScan/${species}"
+obs_dir=${obs_master_dir}/Chr_${CHR}
+obs_file=`sed -n ${CHR}p <${input_folder}/5_ABC_estimator_Chr_lists/Chr_name_list_${species}_Chr1_16_RECON2_newSS_minDP10maxDP200_3RunsCombined_20PLS_zeroSegSitesRemoved`
+
+# Create unique folders to hold results
+cd ${output_folder}
+mkdir ${output_prefix}${CHR}_${IDX}
+
+if [ ! -f ${output_folder}/${obs_file} ]; then
+	cp ${obs_dir}/${obs_file} ${output_folder}
+fi
+
+# Split obs file into multiple files, to parallise
+# Define number of splits. This should be equal to the number of jobs. The splits_obs.py function, when defined with 2 args outputs all splits, and when defined with three args outputs the specific split
+num_of_splits=50
+python3 ${split_file} ${obs_file} ${num_of_splits} ${IDX}
+
+# Define the obs_split variable
+obs_split_prefix=$(basename $obs_file .obs)
+obs_file_split=${obs_split_prefix}_${IDX}.obs
+
+# Run ABCEstimator
+cp {${input_file},${obs_file_split}} ${output_folder}/${output_prefix}${CHR}_${IDX}
+cd ${output_folder}/${output_prefix}${CHR}_${IDX}
+
+${new_ABC_version_dir}/ABCtoolbox ${input_file} simName=${input_folder}/concatenated_results_${run_prefix}.txt obsName=${obs_file_split} outputPrefix=ABC_estimation_${run_prefix}_Chr${CHR}_${IDX} logFile=ABC_estimation_${run_prefix}_Chr${CHR}_${IDX}.log
+
+done

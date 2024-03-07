@@ -1,0 +1,70 @@
+#!/bin/bash
+#BSUB -J "ABC_EST[1-20]%20"
+#BSUB -n 1
+#BSUB -R "rusage[mem=5000]"
+#BSUB -W 48:00
+#BSUB -o /cluster/scratch/lhirzi/ABCEstimator/logs/log.%J.%I
+#BSUB -e /cluster/scratch/lhirzi/ABCEstimator/errs/err.%J.%I
+
+# Load modules, define job number
+module load gdc python/3.6.1
+module load new gcc/6.2.0
+IDX=$LSB_JOBINDEX
+
+# Define species
+species="Dsyl"
+#species="Dcar"
+
+# Define joint algorithm
+jointSamples="grid"
+#jointSamples="mcmc"
+
+# Define directories and input files
+new_ABC_version_dir="/cluster/project/gdc/people/lhirzi/abctoolbox"
+input_folder="/cluster/project/gdc/people/lhirzi/ABCtoolbox_run"
+output_prefix="simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dsyl_3RunsCombined_PLS20_gW_Joint_retSims5000_gridPoints33_FINAL"
+#output_prefix="simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dcar_3RunsCombined_PLS20_gW_Joint_retSims5000_gridPoints33_FINAL"
+output_master_dir="/cluster/scratch/lhirzi/ABCEstimator"
+output_dir=${output_master_dir}/Estimation_results_${output_prefix}
+split_file="${input_folder}/split_obs.py"
+
+if [ $jointSamples = "mcmc" ]; then
+	input_file="${input_folder}/5.Dsyl_ABCEstimator_PLS_jointMCMC_multiCore.input"
+elif [ $jointSamples = "grid" ]; then
+	input_file="${input_folder}/5.Dsyl_ABCEstimator_PLS_joint_multiCore.input"
+fi
+
+if [ $species = "Dsyl" ]; then
+	obs_dir="${input_folder}/Observed_data_genomeWide_neutral/Dsyl/5kbFlankMaker_1kbFlankOthers"
+	obs_file="GW_Neutral_5000_1000_anchored_50kb_start1_end7194149_windowsize5000_M2_Q0_simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dsyl_3RunsCombined_PLS20.obs"
+	sim_file="concatenated_results_simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dsyl_3RunsCombined_PLS20.txt"
+elif [ $species = "Dcar" ]; then
+	obs_dir="${input_folder}/Observed_data_genomeWide_neutral/Dcar/5kbFlankMaker_0kbFlankOthers"
+	obs_file="GW_Neutral_5000_0_anchored_50kb_start1_end6684312_windowsize5000_M2_Q0_simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dcar_3RunsCombined_PLS20.obs"
+	sim_file="concatenated_results_simpleModel_11params_RECON2_newSS_minDP10maxDP200_Dcar_3RunsCombined_PLS20.txt"
+fi
+
+
+# Create unique folders to hold results
+mkdir ${output_dir}
+cd ${output_dir}
+mkdir Estimation_results_${output_prefix}_${IDX}
+
+if [ ! -f ${output_dir}/${obs_file} ]; then
+	cp ${obs_dir}/${obs_file} ${output_dir}
+fi
+
+# Split obs file into multiple files, to parallise
+# Define number of splits. The splits_obs.py function, when defined with 2 args outputs all splits, and when defined with three args outputs the specific split
+num_of_splits=20
+python3 ${split_file} ${obs_file} ${num_of_splits} ${IDX}
+
+# Define the obs_split variable
+obs_split_prefix=$(basename $obs_file .obs)
+obs_file_split=${obs_split_prefix}_${IDX}.obs
+
+# Run ABCEstimator
+cp {${input_file},${obs_file_split}} ${output_dir}/Estimation_results_${output_prefix}_${IDX}
+cd Estimation_results_${output_prefix}_${IDX}
+
+${new_ABC_version_dir}/ABCtoolbox ${input_file} simName=${input_folder}/${sim_file} obsName=${obs_file_split} numRetained=5000 outputPrefix=ABC_estimation_${output_prefix}_${IDX} logFile=ABC_estimation_${output_prefix}_${IDX}.log
