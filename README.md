@@ -23,7 +23,7 @@ CEN haploypes: Sequences and scripts
 
 TCF1 haploypes: Sequences and scripts
 
-misc: convert ptroteins to ACGT for Popart analyses
+misc: convert proteins to ACGT for Popart analyses
 
 **Genome assembly tools**
 
@@ -38,10 +38,7 @@ Sequences used in transformation experiment and alignment of FT gene family
 
 **Phylogeny**
 
-ABBA_BABA_data_and_scripts
-
-- testing introgression across the Dianthus radiation by computation of ABBA-BABA (D-statistics) against the Dianthus phylogeny species tree
-
+ABBA BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
 
 **Population genomics**
 
