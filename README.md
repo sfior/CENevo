@@ -13,7 +13,9 @@ Onset of selection: XXXX
 
 02 Flowering time measurements for GWAS
 
+**Genome scans**
 
+LSD scans for loci under selection as paremeterised in a continent-island model
 
 **Haplotype data**
 
