@@ -5,7 +5,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. slyvestris and the time to coalescence at the DsCEN locus from a geeographically widespread sample of haplotypes
 
-Onset of selection: XXXX
+Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
 **Ecology**
 
@@ -15,7 +15,7 @@ Onset of selection: XXXX
 
 **Genome scans**
 
-LSD scans for loci under selection as paremeterised in a continent-island model
+LSD scans for detecting loci under selection, and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
 
 **Haplotype data**
 
