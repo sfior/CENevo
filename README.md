@@ -7,6 +7,10 @@ ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to e
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
+**Distribution modelling**
+
+Scripts to perform allele/haplotype distribution models, with past and future temporal projections.
+
 **Ecology**
 
 01 Phenotypic divergence measured in common garden
