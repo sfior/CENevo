@@ -1,0 +1,29 @@
+#!/bin/bash
+#BSUB -J "EnvAss[8,23]%2" 
+#BSUB -W 24:00 
+#BSUB -n 1
+#BSUB -R "rusage[mem=5000]"
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+mkdir ./logs
+mkdir ./errs
+
+module load r
+IDX=$LSB_JOBINDEX
+
+
+SCAFF='scaffold65_size297005'
+
+n=${IDX}
+
+echo ${n}
+Rscript Mantel_test_alleles_variables_v3.R \
+'AF_Q20_'${SCAFF}'.txt' \
+${SCAFF} \
+Dcarthusian_all.txt \
+1,2,3,4,5,6 \
+chr,pos,Niedergampel_POP1,Faldumalp_POP2,Grengiols_POP3,Gibidumsee_POP4,Simplon_POP5,Unterstalden_POP6 \
+no 1 1000000 \
+${n} 999 \
+global.fst.matrix.txt

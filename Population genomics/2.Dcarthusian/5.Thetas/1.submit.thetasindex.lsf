@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#BSUB -J "thetasidx[1-6]%6"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 4
+#BSUB -W 24:00
+#BSUB -o ./thetasidxlogs/log.%J.%I
+#BSUB -e ./thetasidxerrs/err.%J.%I
+
+mkdir ./thetasidxlogs/
+mkdir ./thetasidxerrs/
+
+
+## set paths
+safdir='../'
+sfsdir='../'
+
+safext='.1-199'
+sfsext=''
+
+module load gcc/4.8.2 gdc angsd/0.917
+
+
+IDX=$LSB_JOBINDEX
+BARCODES=`sed -n ${IDX}p < Dcar_barcodes.txt`
+
+saf1=$(echo $BARCODES | cut -f2 -d' ')
+
+
+realSFS saf2theta -P 4 \
+${safdir}${saf1}${safext}'.saf.idx' -sfs ${sfsdir}${saf1}${sfsext}'.sfs' -outname ${saf1}
+
+
