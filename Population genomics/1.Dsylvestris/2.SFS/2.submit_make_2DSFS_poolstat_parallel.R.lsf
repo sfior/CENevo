@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#BSUB -J "poolst2DSFS[1-15]%15"
+#BSUB -R "rusage[mem=50000]"
+#BSUB -n 1
+#BSUB -W 24:00
+#BSUB -o ./poolst2DSFSlogs/log.%J.%I
+#BSUB -e ./poolst2DSFSerrs/err.%J.%I
+
+mkdir ./poolst2DSFSlogs/
+mkdir ./poolst2DSFSerrs/
+
+sitesfile='poolstatoutput.1-20_sites_lowerQ20eq0.txt'
+
+module load gdc r/3.2.2
+
+
+IDX=$LSB_JOBINDEX
+pair=`sed -n ${IDX}p < fst_pairs.txt`
+
+popA=$(echo $pair | cut -f1 -d' ' | sed 's/pop//g')
+popB=$(echo $pair | cut -f2 -d' ' | sed 's/pop//g')
+
+Rscript make_2DSFS_poolstat_parallel.R ${sitesfile} ${popA} ${popB}  
+
+
+
+
