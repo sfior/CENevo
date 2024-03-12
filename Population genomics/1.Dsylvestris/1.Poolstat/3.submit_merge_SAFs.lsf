@@ -1,0 +1,41 @@
+#!/bin/bash
+#BSUB -J "angsd_realSFS[1-6]%6"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 4
+#BSUB -W 24:00
+#BSUB -o ./realSFScatlogs/log.%J.%I
+#BSUB -e ./realSFScaterrs/err.%J.%I
+
+# This command merges the saf files produced by separate jobs of poolstat
+
+mkdir ./realSFScatlogs/
+mkdir ./realSFScaterrs/
+
+## set variables
+safdir='./tmp.'
+ext='_realn_recal_sorted.saf.idx'
+
+
+module load gcc/4.8.2 gdc angsd/0.912
+
+IDX=$LSB_JOBINDEX
+BARCODES=`sed -n ${IDX}p < Dsyl_barcodes.txt`
+
+B=$(echo $BARCODES | cut -f1 -d' ')
+out=$(echo $BARCODES | cut -f2 -d' ')
+
+rm ${B}'_saffiles.txt'
+touch ${B}'_saffiles.txt'
+for i in $(seq 1 200)
+do
+echo ${safdir}${i}/${B}${ext} >> ${B}'_saffiles.txt'
+done
+
+
+
+SAF=$(cat ${B}'_saffiles.txt')
+
+realSFS cat ${SAF} -outnames ${out}'.1-200'
+realSFS ${out}'.1-200.saf.idx' -P 4 > ${out}'.1-200.sfs'
+
+

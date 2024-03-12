@@ -1,0 +1,34 @@
+#!/bin/bash
+#BSUB -J "poolstat[1-200]%20" 
+#BSUB -W 24:00 
+#BSUB -n 1
+#BSUB -R "rusage[mem=20000]"
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+# This command runs poolstat in 200 jobs
+
+
+mkdir ./logs
+mkdir ./errs
+
+module load gcc/4.8.2 gdc perl/5.18.4 samtools/1.3
+
+IDX=$LSB_JOBINDEX
+
+
+###paths
+scaffdir='./split_scaffold_lists/'
+tmpdir='./tmp.'
+
+ext='_realn_recal_sorted.bam'  #suffix of bamfiles
+
+SCAFFS=$(cat  ${scaffdir}'scaffolds.'$IDX'.list')
+
+poolStat task=AFL \
+bamList=${tmpdir}${IDX}'/ACAGTG'${ext},${tmpdir}${IDX}'/CAGATC'${ext},${tmpdir}${IDX}'/GTGAAA'${ext},${tmpdir}${IDX}'/AGTCAA'${ext},${tmpdir}${IDX}'/CTTGTA'${ext},${tmpdir}${IDX}'/GCCAAT'${ext} \
+sampleSize=40,40,40,40,40,40 \
+out=${tmpdir}${IDX}'/poolstatoutput.'${IDX} \
+chr=${SCAFFS} \
+minCoverage=20 maxCoverage=200 \
+suppressWarnings

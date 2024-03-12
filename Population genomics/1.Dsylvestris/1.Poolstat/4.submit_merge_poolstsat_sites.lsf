@@ -1,0 +1,32 @@
+#!/bin/bash
+#BSUB -J "merge_poolstat_sites[1]"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 1
+#BSUB -W 4:00
+#BSUB -o ./mergePoolstatlogs/log.%J.%I
+#BSUB -e ./mergePoolstaterrs/err.%J.%I
+
+# This command merges the poolstat files of the first 20 jobs. The output is used for computation of the SFS downstream
+
+mkdir ./mergePoolstatlogs/
+mkdir ./mergePoolstaterrs/
+
+
+## set variables
+safdir='./tmp.'
+runlist='20'
+
+for n in $runlist
+do
+rm 'poolstat_sites_files1-'${n}'.txt'
+touch 'poolstat_sites_files1-'${n}'.txt'
+	for i in $(seq 1 $n)
+	do
+	echo ${safdir}${i}/'poolstatoutput.'${i}'_sites.txt.gz' >> 'poolstat_sites_files1-'${n}'.txt'
+	done
+
+SITES=$(cat 'poolstat_sites_files1-'${n}'.txt')
+zcat $SITES | grep -v 'chr' > 'poolstatoutput.1-'${n}'_sites.txt'
+
+done
+
