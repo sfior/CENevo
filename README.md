@@ -17,6 +17,10 @@ Scripts to perform allele/haplotype distribution models, with past and future te
 
 02 Flowering time measurements for GWAS
 
+**Genome assembly tools**
+
+Scaffold and gene names used in the manuscript, and workflow to extract annotation for candidate loci
+
 **Genome scans**
 
 LSD scans for detecting loci under selection, and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
@@ -24,10 +28,6 @@ LSD scans for detecting loci under selection, and characterising genetic trade-o
 **Haplotype data**
 
 Sequences and scripts for CEN and TCF1 haplotypes
-
-**Genome assembly tools**
-
-Scaffold and gene names used in the manuscript, and workflow to extract annotation for candidate loci
 
 **Molecular biology**
 
