@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#BSUB -J "fststats[1-15]%15"
+#BSUB -R "rusage[mem=20000]"
+#BSUB -R "beta"
+#BSUB -n 1
+#BSUB -W 4:00
+#BSUB -o ./fststatslogs/log.%J.%I
+#BSUB -e ./fststatserrs/err.%J.%I
+
+mkdir ./fststatslogs/
+mkdir ./fststatserrs/
+
+
+#-------------------------
+# These analyses are for 500 bp non-overlapping windows
+#------------------------
+
+sw='500'
+mkdir 'ite_'$sw
+mkdir 'global'
+
+## set variables
+fstext='.fst.idx'
+
+module load gcc/4.8.2 gdc angsd/0.917
+
+
+IDX=$LSB_JOBINDEX
+pair=`sed -n ${IDX}p < fst_pairs.txt`
+
+twoD=$(echo $pair | cut -f3 -d' ')
+
+# calculate global estimate
+realSFS fst stats ${twoD}${fstext} > './global/'${twoD}'_global.fst'
+
+realSFS fst stats2 \
+${twoD}${fstext} -win ${sw} -step ${sw} > './ite_'${sw}'/'${twoD}'_w'${sw}'_s'${sw}'.fst'
+
+
+
+

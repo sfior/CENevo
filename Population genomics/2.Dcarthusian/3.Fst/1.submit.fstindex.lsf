@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#BSUB -J "fstidx[1-15]%15"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 4
+#BSUB -W 24:00
+#BSUB -o ./fstidxlogs/log.%J.%I
+#BSUB -e ./fstidxerrs/err.%J.%I
+
+mkdir ./fstidxlogs/
+mkdir ./fstidxerrs/
+
+
+## set paths
+safdir='../'
+sfsdir='../'
+
+safext='.1-200'
+sfsext=''
+
+module load gcc/4.8.2 gdc angsd/0.917
+
+
+IDX=$LSB_JOBINDEX
+pair=`sed -n ${IDX}p < fst_pairs.txt`
+
+saf1=$(echo $pair | cut -f1 -d' ')
+saf2=$(echo $pair | cut -f2 -d' ')
+twoD=$(echo $pair | cut -f3 -d' ')
+
+realSFS fst index -P 4 \
+${safdir}${saf1}${safext}'.saf.idx' ${safdir}${saf2}${safext}'.saf.idx' -sfs ${sfsdir}${twoD}${sfsext}'.sfs' \
+-fstout ${saf1}'.'${saf2} -whichFst 1
+
+

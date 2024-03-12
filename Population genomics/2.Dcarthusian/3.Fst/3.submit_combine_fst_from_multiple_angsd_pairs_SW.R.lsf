@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#BSUB -J "fstcombSW[1]%1"
+#BSUB -R "rusage[mem=10000]"
+#BSUB -n 1
+#BSUB -W 4:00
+#BSUB -R beta
+#BSUB -o ./fstcomblogs/log.%J.%I
+#BSUB -e ./fstcomberrs/err.%J.%I
+
+
+mkdir ./fstcomblogs/
+mkdir ./fstcomberrs/
+
+
+## set variables
+
+sw='500'
+STP='500'
+MINCOV='50'
+
+module load gdc r/3.1
+
+IDX=$LSB_JOBINDEX
+
+
+cwd=$(pwd)
+
+cd ${cwd}
+cd 'ite_'${sw}
+Rscript ../combine_fst_from_multiple_angsd_pairs.R ../fst_comps.txt ${sw} ${STP}  ${MINCOV}
+cd ${cwd}
+
