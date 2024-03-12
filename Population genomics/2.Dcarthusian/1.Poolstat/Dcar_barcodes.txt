@@ -1,0 +1,6 @@
+ATTCCT pop1
+CGTACG pop2
+GATCAG pop3
+GTGGCC pop4
+GTTTCG pop5
+TTAGGC pop6
