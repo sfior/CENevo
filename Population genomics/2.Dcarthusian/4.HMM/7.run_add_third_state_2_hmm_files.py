@@ -1,0 +1,1 @@
+python add_third_state_2_hmm_files.py 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 pop1.pop3,pop1.pop4,pop1.pop6,pop2.pop3,pop2.pop4,pop2.pop6,pop3.pop5,pop4.pop5,pop5.pop6,pop1.pop2,pop1.pop5,pop2.pop5,pop3.pop4,pop3.pop6,pop4.pop6
