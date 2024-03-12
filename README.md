@@ -3,7 +3,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. slyvestris and the time to coalescence at the DsCEN locus from a geeographically widespread sample of haplotypes
+ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. slyvestris and the time to coalescence at the DsCEN locus from a geographic sample of haplotypes
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
@@ -23,22 +23,15 @@ LSD scans for detecting loci under selection, and characterising genetic trade-o
 
 **Haplotype data**
 
-CEN haploypes: Sequences and scripts
-
-TCF1 haploypes: Sequences and scripts
-
-misc: convert proteins to ACGT for Popart analyses
+Sequences and scripts for CEN and TCF1 haplotypes
 
 **Genome assembly tools**
 
-Scaffold names and extract annotation for candidate loci
-
+Scaffold and gene names used in the manuscript, and workflow to extract annotation for candidate loci
 
 **Molecular biology**
 
 Transcritps used in Arabidopsis transformation experiment and alignment of FT gene family
-
-
 
 **Phylogeny**
 
@@ -46,4 +39,4 @@ ABBA BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Environment associations TCF1: test association with freezing tolerance
+Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation table, Environmental associations fo TCF1
