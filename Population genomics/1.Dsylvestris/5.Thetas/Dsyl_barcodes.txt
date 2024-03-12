@@ -1,0 +1,7 @@
+ACAGTG pop1
+CAGATC pop2
+GTGAAA pop3
+AGTCAA pop4
+CTTGTA pop5
+GCCAAT pop6
+
