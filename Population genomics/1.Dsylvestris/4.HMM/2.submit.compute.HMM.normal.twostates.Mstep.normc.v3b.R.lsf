@@ -1,0 +1,29 @@
+#!/bin/bash
+#BSUB -J "[1-16]%16" 
+#BSUB -W 4:00 
+#BSUB -n 1
+#BSUB -R "rusage[mem=10000]"
+#BSUB -R "beta"
+#BSUB -o ./logs/log.%J.%I
+#BSUB -e ./errs/err.%J.%I
+
+mkdir ./logs
+mkdir ./errs
+
+
+#set variables
+
+#CHR='all'
+CHR=$(seq 1 16)
+
+module load gdc r/3.2.2
+
+
+
+IDX=$LSB_JOBINDEX
+pair=`sed -n ${IDX}p < fst_comps.txt`
+
+for i in $CHR
+do
+Rscript  3_compute.HMM.normal.twostates.Mstep.normc.v3b.R   combined_pairs_filter_250bp_sorted.fst  ${pair}  .9  'chr_'${i}
+done
