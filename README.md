@@ -39,4 +39,4 @@ ABBA BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation table, Environmental associations fo TCF1
+Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, Environmental associations fo TCF1
