@@ -13,9 +13,7 @@ Scripts to perform allele/haplotype distribution models, with past and future te
 
 **Ecology**
 
-01 Phenotypic divergence measured in common garden
-
-02 Flowering time measurements for GWAS
+Data and script for phenotypic divergence measured in common garden, and CEN allelic effects tested in transplant experiment
 
 **Genome assembly tools**
 
@@ -27,7 +25,7 @@ LSD scans for detecting loci under selection, and characterising genetic trade-o
 
 **Haplotype data**
 
-Sequences and scripts for CEN and TCF1 haplotypes
+Data and scripts for analyses of CEN and TCF1 haplotypes
 
 **Molecular biology**
 
@@ -39,4 +37,4 @@ ABBA BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, Environmental associations fo TCF1
+Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, Environmental associations for TCF1, GWAS on flowering time
