@@ -9,7 +9,7 @@ Onset of selection: Appoximate Bayesian Computation workflow to estimate the tim
 
 **Distribution modelling**
 
-Scripts to perform allele/haplotype distribution models, with past and future temporal projections
+Scripts to perform haplotype distribution models, with past and future temporal projections
 
 **Ecology**
 
