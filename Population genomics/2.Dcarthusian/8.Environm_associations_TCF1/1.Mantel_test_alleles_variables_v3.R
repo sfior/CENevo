@@ -21,7 +21,7 @@
 # Examples: 
 # With subsetting only a portion of the scaffold:
 #Rscript Mantel_test_alleles_variables_v3.R \
-#Dsyl_scaffold4.txt \
+#scaffold1_size1318325_1_614794 \
 #scaffold4 \
 #Dsylvestris_all.txt \
 #6,4,2,5,1,3 \
