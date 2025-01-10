@@ -9,7 +9,7 @@ library(DHARMa)
 
 # This script tests fitnss effects of alternate CEN genotypes in parental plants (low elevation populations) growing in the transplant experiment (low elevation sites). 
 
-lslg<-read.table('CEN_parentals_lslg.txt',header=T,sep='\t')
+lslg<-read.table('2.CEN_parentals_fitness_lslg.txt',header=T,sep='\t')
 lslg2<-na.omit(lslg)
 lslg2$Call[lslg2$Call == "Homozygous 1/1"] <- "LL"
 lslg2$Call[lslg2$Call == "Homozygous 2/2"] <- "HH"
@@ -45,7 +45,7 @@ y_limits <- layer_scales(plot2)$x$range$range
 layer_data <- layer_data(plot2)$colour
 colors <- unique(layer_data)
 # Make boxplot
-boxplot <- ggplot(lslg1, aes(x = Call, y = day5globYears, fill = Call)) +
+boxplot <- ggplot(lslg, aes(x = Call, y = day5globYears, fill = Call)) +
   scale_fill_manual(values = colors) +
   scale_y_continuous(limits = y_limits) +
   geom_boxplot() +

@@ -6,10 +6,11 @@ library(emmeans)
 library(partR2)
 library(dplyr)
 library(MuMIn)
+library(car)
 # This script plots and tests differences in flowering time of alternate CEN genotypes from parenatal genotypes growing in the reciprocal transplant experiment
 df<-read.table('1.CEN_parentals_flowerintTime.csv',header=T,sep=',',na.string=c('NA','na','n.a.',''),fill=T)
 
-df$raw_mean_day <- rowMeans(df[, c('day16', 'day17', 'day18', 'day19', 'day20')], na.rm = TRUE)
+#df$raw_mean_day <- rowMeans(df[, c('day16', 'day17', 'day18', 'day19', 'day20')], na.rm = TRUE)
 # standardise flowering time with elevational environment 
 df2 <- df %>%
   group_by(site_altitude) %>%
@@ -68,7 +69,6 @@ df2$site_plot<-as.factor(df2$site_plot)
 df2$altitude<-as.factor(df2$altitude)
 
 m1<-lmer(day5ScaledYears ~ geno * site_altitude * altitude + (1|site/site_plot), data=df2, na.action=na.omit)
-library(car)
 Anova(m1)
 
 m2<-lmer(day5ScaledYears ~ geno * site_altitude + altitude + (1|site/site_plot), data=df2, na.action=na.omit)
@@ -107,6 +107,7 @@ emm_df_means_low$backtransformed_lower_CL <- emm_df_means_low$lower.CL * overall
 emm_df_means_low$backtransformed_upper_CL <- emm_df_means_low$upper.CL * overall_sd_low + overall_mean_low
 
 emm_df_means_backtransformed_day <- rbind(emm_df_means_high, emm_df_means_low)
+emm_df_means_backtransformed_day
 
 #Contrasts
 emm_df_contrasts_high <- subset(emm_df_contrasts, site_altitude=="high_site")
