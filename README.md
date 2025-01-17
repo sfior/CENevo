@@ -13,7 +13,7 @@ Scripts to perform haplotype distribution models, with past and future temporal 
 
 **Ecology**
 
-Data and script for phenotypic divergence measured in common garden, and CEN allelic effects tested in transplant experiment
+Data and script for phenotypic divergence in common garden, and for CEN allelic effects in transplant experiment
 
 **Genome assembly tools**
 
@@ -21,7 +21,7 @@ Scaffold and gene names used in the manuscript, and workflow to extract annotati
 
 **Genome scans**
 
-LSD scans for detecting loci under selection, and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
+LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
 
 **Haplotype data**
 
@@ -37,4 +37,4 @@ ABBA BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, Environmental associations for TCF1, GWAS on flowering time, LD for focal populations and across the species' range, Environmental associations
+Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, Environmental associations
