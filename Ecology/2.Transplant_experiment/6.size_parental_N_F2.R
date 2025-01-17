@@ -1,12 +1,12 @@
 library(ggplot2)
 library(reshape2)
 
-# This script makes plots for size of parental plants growing in the transplant experiment, can compares size with F2 plants
+# This script makes plots for size of parental plants growing in the transplant experiment, then compares size with F2 plants
 
 ## Size of parental plants in multi-year transplant
-df_wild<-read.table('size_parentals.txt',sep='\t',header=T)
+df_wild<-read.table('6.size_parentals.txt',sep='\t',header=T)
 df_wild$altitude <- factor(df_wild$altitude, levels = c("low", "high"))  
-data<-df_wild_FZ[,c("ros_s16","ros_e16","ros_s17","ros_s18","ros_e18","ros_s19","ros_e19","ros_s20","ros_e20","ros_s21","ros_e21","ros_s22","ros_e22","ros_s23","ros20.23","altitude","site_altitude")]
+data<-df_wild[,c("ros_s16","ros_e16","ros_s17","ros_s18","ros_e18","ros_s19","ros_e19","ros_s20","ros_e20","ros_s21","ros_e21","ros_s22","ros_e22","ros_s23","ros20.23","altitude","site_altitude")]
 # Reshape the data into long format
 melted_data <- melt(data, id.vars = c("altitude", "site_altitude"))
 # Make plot:
@@ -33,7 +33,7 @@ p
 
 
 # Size of F2 plants in multi-year transplant
-df_f2<-read.table('size_F2.txt',header=T,sep='\t')
+df_f2<-read.table('6.size_F2.txt',header=T,sep='\t')
 df_f2$CEN <- factor(df_f2$CEN, levels = c("H-L", "H-H"))  
 # Back-transform the standardised mean values using 3rd year:
 hs<-subset(df_f2,site=='Findeln')
@@ -65,8 +65,8 @@ plot
 
 
 lslg<-subset(df_wild,site=='zeneggen' & altitude =='low')
-wild_ros_hs<-lslg$ros20.23/10
-wild_F2_hs <- data.frame(ros = c(bktr_hs_yr3, wild_ros_hs), pop = c(rep('F2', length(bktr_hs_yr3)), rep('wild', length(wild_ros_hs))))
+wild_ros_ls<-lslg$ros20.23/10
+wild_F2_ls <- data.frame(ros = c(bktr_hs_yr3, wild_ros_hs), pop = c(rep('F2', length(bktr_hs_yr3)), rep('wild', length(wild_ros_hs))))
 
 plot<-ggplot(wild_F2_ls, aes(x = pop, y = ros,fill=pop)) +
   geom_violin(trim=F) + stat_summary(fun=mean, geom="point", shape=16, size=2,color='black') + 
