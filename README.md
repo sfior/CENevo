@@ -3,7 +3,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. slyvestris and the time to coalescence at the DsCEN locus from a geographic sample of haplotypes
+ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN locus from a geographic sample of haplotypes
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
@@ -13,7 +13,7 @@ Scripts to perform haplotype distribution models, with past and future temporal 
 
 **Ecology**
 
-Data and script for phenotypic divergence in common garden, and for CEN allelic effects in transplant experiment
+Data and scripts assessing phenotypic divergence in common gardens, and for evaluating CEN allelic effects in transplant experiments
 
 **Genome assembly tools**
 
@@ -29,12 +29,12 @@ Data and scripts for analyses of CEN and TCF1 haplotypes
 
 **Molecular biology**
 
-Transcritps used in Arabidopsis transformation experiment and alignment of FT gene family
+Transcripts used in Arabidopsis transformation experiment and alignment of FT gene family
 
 **Phylogeny**
 
-ABBA BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
+ABBA-BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
 
 **Population genomics**
 
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of Thetas, Fst and Theta plots for candidate regions, Cadidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, Environmental associations
+Population genomic analyses including Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, and environmental associations
