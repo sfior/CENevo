@@ -37,4 +37,4 @@ ABBA-BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Population genomic analyses including Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, and environmental associations
+Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD
