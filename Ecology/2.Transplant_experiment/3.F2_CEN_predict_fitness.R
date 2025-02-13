@@ -1,6 +1,9 @@
 #############Set WD and load packages and data
 library(dplyr)
 library(aster)
+
+## This scipt fits Aster models and computes intergative fitness for F2 plants in the transplant experiment
+
 #setwd("/path/to/wd")
 df <- read.csv("F2_CEN_fitness_pheno_data_for_aster.csv")
 #############Standardize traits, define function
