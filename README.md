@@ -29,7 +29,7 @@ Data and scripts for analyses of CEN and TCF1 haplotypes
 
 **Molecular biology**
 
-Transcripts used in Arabidopsis transformation experiment and alignment of FT gene family
+Alignment of FT gene family. Transcripts, data and scripts used in Arabidopsis transformation experiment  
 
 **Phylogeny**
 
