@@ -1,6 +1,7 @@
 library(lmerTest)
 library(ggeffects)
 library(ggplot2)
+library(emmeans)
 
 
 # This script tests the effect of plant size on flowering  across sites and CEN genotypes
@@ -26,6 +27,12 @@ plot(fit6)
 # plot
 v<-ggpredict(fit6, terms = c("size [all]","CEN")) 
 plot2<-plot(v) + geom_vline(xintercept=0, linetype="dashed"); plot2
+
+emm_fit6 <- test(emmeans(fit6, "CEN"))
+em_cont_fit6<-emmeans(fit6, specs = pairwise ~ CEN, type="linear", adjust="none")
+em_cont_fit6
+emm_fit6
+
 
 
 
