@@ -13,7 +13,7 @@ Scripts to perform haplotype distribution models, with past and future temporal 
 
 **Ecology**
 
-Data and scripts assessing phenotypic divergence in common gardens, and for evaluating CEN allelic effects in transplant experiments
+Data and scripts assessing phenotypic divergence in common gardens, and for evaluating DsCEN/2 allelic effects in transplant experiments
 
 **Genome assembly tools**
 
