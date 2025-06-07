@@ -3,7 +3,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN locus from a geographic sample of haplotypes
+ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
@@ -25,7 +25,7 @@ LSD scans for detecting loci under selection and characterising genetic trade-of
 
 **Haplotype data**
 
-Data and scripts for analyses of CEN and TCF1 haplotypes
+Data and scripts for analyses of CEN/2 and TCF1 haplotypes
 
 **Molecular biology**
 

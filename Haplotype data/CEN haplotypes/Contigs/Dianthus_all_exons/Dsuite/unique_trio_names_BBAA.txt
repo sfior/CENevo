@@ -1,0 +1,10 @@
+Ds,Group_3,Group_2
+Ds,Group_5,Group_2
+Ds,Group_6,Group_2
+Group_5,Ds,Group_3
+Group_6,Ds,Group_3
+Group_6,Ds,Group_5
+Group_5,Group_3,Group_2
+Group_6,Group_3,Group_2
+Group_5,Group_6,Group_2
+Group_5,Group_6,Group_3
