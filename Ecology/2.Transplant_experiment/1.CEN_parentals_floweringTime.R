@@ -10,7 +10,7 @@ library(car)
 # This script plots and tests differences in flowering time of alternate CEN genotypes from parenatal genotypes growing in the reciprocal transplant experiment
 df<-read.table('1.CEN_parentals_flowerintTime.csv',header=T,sep=',',na.string=c('NA','na','n.a.',''),fill=T)
 
-#df$raw_mean_day <- rowMeans(df[, c('day16', 'day17', 'day18', 'day19', 'day20')], na.rm = TRUE)
+df$raw_mean_day <- rowMeans(df[, c('day16', 'day17', 'day18', 'day19', 'day20')], na.rm = TRUE)
 # standardise flowering time with elevational environment 
 df2 <- df %>%
   group_by(site_altitude) %>%
