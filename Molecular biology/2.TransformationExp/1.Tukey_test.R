@@ -13,7 +13,7 @@ for (t in traits){
   print(t)
   data<-read.table(paste(t,'.txt',sep=''),header=T,sep='\t',na.string='NA',fill=T)
   df<-data.frame(t(data))
-  dfGeno<-c(rep('High',9),rep('Low',9),rep('Col',2))
+  Geno<-c(rep('High',9),rep('Low',9),rep('Col',2))
   df<-cbind(df,Geno)
   
   High<-subset(df,Geno=='High')[,-9]
