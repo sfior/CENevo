@@ -14,7 +14,6 @@ lslg2<-na.omit(lslg)
 lslg2$Call[lslg2$Call == "Homozygous 1/1"] <- "LL"
 lslg2$Call[lslg2$Call == "Homozygous 2/2"] <- "HH"
 
-
 fit <- glmmTMB(seeds5years ~ Call * poly(ros5globYears,2) * poly(day5globYears,2), data=lslg2, family=nbinom2,ziformula =~.) 
 # Explore models
 fit_2a <- glmmTMB(seeds5years ~ Call * poly(ros5globYears,2) + Call * poly(day5globYears,2), data=lslg2, family=nbinom2,ziformula =~.)
@@ -22,10 +21,10 @@ fit_2c <- glmmTMB(seeds5years ~ Call * poly(day5globYears,2) + poly(ros5globYear
 fit_2g <- glmmTMB(seeds5years ~ Call * poly(ros5globYears,2) * poly(day5globYears,2) + site + (1|site_plot), data=lslg2, family=nbinom2,ziformula =~.) 
 #fit_2g <- glmmTMB(seeds5years ~ Call * poly(ros5globYears,2) * poly(day5globYears,2) + (1|site/site_plot), data=lslg2, family=nbinom2,ziformula =~.)  #  no convergence
 fit_2h <- glmmTMB(seeds5years ~ Call * poly(ros5globYears,2) * poly(day5globYears,2) + site, data=lslg2, family=nbinom2,ziformula =~.)  
-print(anova(fit_2,fit_2a))
-print(anova(fit_2,fit_2c))
-print(anova(fit_2,fit_2g))
-print(anova(fit_2,fit_2h))
+print(anova(fit,fit_2a))
+print(anova(fit,fit_2c))
+print(anova(fit,fit_2g))
+print(anova(fit,fit_2h))
 # fit is the best model
 
 summary(fit)
