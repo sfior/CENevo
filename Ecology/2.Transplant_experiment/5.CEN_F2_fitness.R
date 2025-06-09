@@ -53,7 +53,6 @@ x2 = as.numeric(as.character(v_Findeln_HH$x))
 y2 = as.numeric(as.character(v_Findeln_HH$group))
 z2 = as.numeric(as.character(v_Findeln_HH$predicted))
 
-# For analyses separate by site:
 #Zeneggen:
 v1<-seq(min(dfZ$day,na.rm=T), max(dfZ$day,na.rm=T),0.075)
 v2<-seq(min(dfZ$size,na.rm=T), max(dfZ$size,na.rm=T),0.075)

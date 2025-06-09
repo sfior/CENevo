@@ -66,7 +66,7 @@ plot
 
 lslg<-subset(df_wild,site=='zeneggen' & altitude =='low')
 wild_ros_ls<-lslg$ros20.23/10
-wild_F2_ls <- data.frame(ros = c(bktr_hs_yr3, wild_ros_hs), pop = c(rep('F2', length(bktr_hs_yr3)), rep('wild', length(wild_ros_hs))))
+wild_F2_ls <- data.frame(ros = c(bktr_ls_yr3, wild_ros_ls), pop = c(rep('F2', length(bktr_ls_yr3)), rep('wild', length(wild_ros_ls))))
 
 plot<-ggplot(wild_F2_ls, aes(x = pop, y = ros,fill=pop)) +
   geom_violin(trim=F) + stat_summary(fun=mean, geom="point", shape=16, size=2,color='black') + 

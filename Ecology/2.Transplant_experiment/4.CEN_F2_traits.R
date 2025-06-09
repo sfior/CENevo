@@ -2,7 +2,7 @@ library(lmerTest)
 library(ggeffects)
 library(ggplot2)
 library(emmeans)
-
+library(car)
 
 # This script tests the effect of plant size on flowering  across sites and CEN genotypes
 
