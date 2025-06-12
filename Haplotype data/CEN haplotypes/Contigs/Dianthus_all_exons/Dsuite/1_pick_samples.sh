@@ -1,7 +1,7 @@
 # Take Dsyl seqs including 3 major haplotypes + 3 radom seqs
 
 
-file1='0_sample_list_1165.txt'
+file1='0_sample_list_1163.txt'
 file2='Exons_CEN.fasta'
 
 for n in {1..500}
