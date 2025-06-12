@@ -3,7 +3,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes
+ABC coalmod speciation data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
@@ -37,4 +37,4 @@ ABBA-BABA data and scripts: test introgression across the Dianthus radiation wit
 
 **Population genomics**
 
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD
+Population genomic analyses including Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD
