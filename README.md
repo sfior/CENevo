@@ -23,6 +23,10 @@ Scaffold and gene names used in the manuscript, and workflow to extract annotati
 
 LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
 
+**Genomic offset**
+
+Scripts to perform gradient forest-based projectinos of adaptive genetic composition, genomic offset and glacial genomic offset+ 
+
 **Haplotype data**
 
 Data and scripts for analyses of CEN/2 and TCF1 haplotypes
