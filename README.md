@@ -3,7 +3,7 @@ Scripts and datasets associated with the manuscript "Ancient alleles drive conte
 
 **Demography**
 
-ABC coalmod speciation Ds data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes
+ABC coalmod speciation data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions
 
@@ -23,6 +23,10 @@ Scaffold and gene names used in the manuscript, and workflow to extract annotati
 
 LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model
 
+**Genomic offset**
+
+Scripts to perform gradient forest-based projections of adaptive genetic composition, genomic offset and glacial genomic offset+ 
+
 **Haplotype data**
 
 Data and scripts for analyses of CEN/2 and TCF1 haplotypes
@@ -31,10 +35,11 @@ Data and scripts for analyses of CEN/2 and TCF1 haplotypes
 
 Alignment of FT gene family. Transcripts, data and scripts used in Arabidopsis transformation experiment  
 
-**Phylogeny**
+**Population genomics**
+
+Population genomic analyses including Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD
+
+**Radiation introgression**
 
 ABBA-BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
 
-**Population genomics**
-
-Population genomic analyses including running Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD

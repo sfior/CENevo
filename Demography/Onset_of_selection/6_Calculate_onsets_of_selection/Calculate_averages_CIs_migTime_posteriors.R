@@ -5,7 +5,7 @@
 library("stringr")
 
 # Set working directory
-setwd("/Users/luqman/Desktop/Migration time demography")
+setwd("/Users/hl636/Documents/Hirzi/ETHPHD/Migration time demography")
 
 # Import data (selection time estimates)
 selection.df <- read.table("selectionTimeEstimates_Free_newSS.txt", header = TRUE) # simpleModel_11params_RECON2_migTime_FINAL_RUN2_FREE
@@ -24,6 +24,7 @@ CI_summary_df <- data.frame(locus=character(), mean=character(), median=characte
 
 # Calculate distribution mean, median, mode and credible intervals (highest density region)
 for (k in match(paste0(candidate_regions, "_selection_time"), colnames(selection.df))) {
+  print(k)
   selection_times <- selection.df[,k]
   selection_density <- selection.df[,k+1]
   
@@ -41,7 +42,7 @@ for (k in match(paste0(candidate_regions, "_selection_time"), colnames(selection
   # Get intersects (lower and upper)
   time_intersect_idx <- which.min(abs(selection_density - HDR_CI))
   if(length(time_intersect_idx) < 2) {
-    time_intersect_idx <- c(time_intersect_idx, which.min(abs(selection_density[-time_intersect_idx] - HDR_CI)))
+    time_intersect_idx <- sort(c(time_intersect_idx, which.min(abs(selection_density[-time_intersect_idx] - HDR_CI))), decreasing = FALSE)
   }
   time_intersect_HDR <- selection_times[time_intersect_idx]
   # Quantile interval
@@ -79,4 +80,4 @@ for (k in match(paste0(candidate_regions, "_selection_time"), colnames(selection
 }
 
 # Write out summary table
-write.table(CI_summary_df, file = "selectionTimeEstimates_Free_newSS_averages_CI.txt", row.names = FALSE)
+write.table(CI_summary_df, file = "selectionTimeEstimates_Free_newSS_averages_CIs.txt", row.names = FALSE, quote = FALSE, sep = "\t")
