@@ -35,10 +35,11 @@ Data and scripts for analyses of CEN/2 and TCF1 haplotypes
 
 Alignment of FT gene family. Transcripts, data and scripts used in Arabidopsis transformation experiment  
 
-**Phylogeny**
-
-ABBA-BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
-
 **Population genomics**
 
 Population genomic analyses including Poolstat, computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD
+
+**Radiation introgression**
+
+ABBA-BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
+
