@@ -1,4 +1,4 @@
-### This script plots CEN present, past and future projections. Results are generated and imported from SDM_Dsyl_lineageUpdate_DsylDcar_TraCE_newest_M1.R
+### This script plots CEN present, past and future projections. Results are generated and imported from distributionModels.R
 
 ## Load packages
 library("ggplot2")
@@ -14,7 +14,12 @@ cast <- "forecast"
 if (cast == "hindcast") {
   cast.var.name <- "LGM"
 } else if (cast == "forecast") {
-  cast.var.name <- "RCP45.2061-2080"
+  CMIP <- 6 # select CMIP 5 or 6
+  if (CMIP==5) {
+    cast.var.name <- "RCP45.2061-2080"
+  } else if (CMIP==6) {
+    cast.var.name <- "SSP370.2071-2100"
+  }
 }
 
 ## Define plotting extent
@@ -24,12 +29,18 @@ e_cen_plot <- extent(5, 12, 43.5, 48)
 prj_longlat <- "+init=epsg:4326"
 prj_utm32 <- "+init=epsg:32632"
 
-## Import results
+## Import results (output of Distribution_modeller.R)
 setwd("/Users/hl636/Documents/Hirzi/ETHPHD/SDM/Dsylvestris/Data/")
 if(cast == "forecast") {
-  pred.prob.current.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "/pred.prob.current.masked.CentralAlps.2023-08-03_17_18_43.grd"))
-  pred.prob.LGM.masked <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "/pred.prob.LGM.masked.forecast.2023-08-03_17_18_43.grd"))
-  pred.prob.LGM.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "/pred.prob.LGM.masked.CentralAlps.forecast.2023-08-03_17_18_43.grd"))
+  if (CMIP == 5) {
+    pred.prob.current.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.current.masked.CentralAlps.2025-05-23_14_11_06.grd"))
+    pred.prob.LGM.masked <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.LGM.masked.forecast.2025-05-23_14_11_06.grd"))
+    pred.prob.LGM.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.LGM.masked.CentralAlps.forecast.2025-05-23_14_11_06.grd"))
+  } else if (CMIP == 6) {
+    pred.prob.current.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.current.masked.CentralAlps.2025-05-24_21_22_04.grd"))
+    pred.prob.LGM.masked <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.LGM.masked.forecast.2025-05-24_21_22_04.grd"))
+    pred.prob.LGM.masked.CentralAlps <-  raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "_CMIP", CMIP, "/pred.prob.LGM.masked.CentralAlps.forecast.2025-05-24_21_22_04.grd"))
+  }
 } else if (cast == "hindcast") {
   pred.prob.current.masked.CentralAlps <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "/pred.prob.current.masked.CentralAlps.2023-08-03_17_15_01.grd"))
   pred.prob.LGM.masked <- raster(paste0("Final_CEN_SDMs_forSimoneMS/", cast, "/pred.prob.LGM.masked.hindcast.2023-08-03_17_15_01.grd"))
@@ -55,14 +66,11 @@ if(plot_originals == TRUE) {
   myColorkey <- list(at=my.brks, labels=list(at=my.at, labels=myLabels))
   myTheme <- rasterTheme(region = c(zeroCol, myPalette))
   # Plot CEN distribution under present central Alpine lineage's mask 
-  pred.prob.current.masked.CentralAlps.plot <- levelplot(pred.prob.current.masked.CentralAlps, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = "Continuous Spatial Projection (Masked Ensemble Model - Today)")
-  pred.prob.current.masked.CentralAlps.plot
+  levelplot(pred.prob.current.masked.CentralAlps, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = "Continuous Spatial Projection (Masked Ensemble Model - Today)")
   # Plot CEN hindcast/forecast under future/past central Alpine lineage's distribution mask
-  pred.prob.LGM.masked.plot <- levelplot(pred.prob.LGM.masked, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = paste0("Continuous Spatial Projection (Masked Ensemble Model - ", cast.var.name, ")"))
-  pred.prob.LGM.masked.plot
+  levelplot(pred.prob.LGM.masked, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = paste0("Continuous Spatial Projection (Masked Ensemble Model - ", cast.var.name, ")"))
   # Plot CEN hindcast/forecast under present central Alpine lineage's distribution mask
-  pred.prob.LGM.masked.CentralAlps.plot <- levelplot(pred.prob.LGM.masked.CentralAlps, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = paste0("Continuous Spatial Projection (Masked Ensemble Model - ", cast.var.name, ")"))
-  pred.prob.LGM.masked.CentralAlps.plot
+  levelplot(pred.prob.LGM.masked.CentralAlps, par.settings = myTheme, at=my.at, colorkey=myColorkey, maxpixels = 1e7, margin = FALSE, main = paste0("Continuous Spatial Projection (Masked Ensemble Model - ", cast.var.name, ")"))
 }
 
 ## Plot with DEM baselayer
@@ -100,14 +108,6 @@ my.brks=seq(5000.05, 5001.05, by=0.1)
 myLabels <- c("NA (species not present)", "0.9 - low allele", "0.8 - low allele", "0.7 - low allele", "0.6 - low allele", "0.5 - high/low allele", "0.6 - high allele", "0.7 - high allele", "0.8 - high allele", "0.9 - high allele", "1.0 - high allele")
 myColorkey <- list(at=my.brks, labels=list(at=my.at, labels=myLabels))
 # Plot
-CEN_raster.dem.plot <- levelplot(CEN_dem_raster_stack[[1]], col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE)
-#CEN_raster.dem.plot <- levelplot(CEN_raster.dem, col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE, main="test", colorkey=myColorkey)
-CEN_raster.dem.plot
-
-
-## Plot Wallis zoomed in
-e_wallis <- extent(7, 8, 46.02, 46.42)
-CEN_present_wallis <- crop(CEN_dem_raster_stack[[1]], e_wallis)
-CEN_raster.dem.plot <- levelplot(CEN_present_wallis, col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE)
-CEN_raster.dem.plot
-# Add polygon denoting LGM refugia? Or obvious from LGM plot?
+levelplot(CEN_dem_raster_stack[[1]], col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE)
+levelplot(CEN_dem_raster_stack[[2]], col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE)
+levelplot(CEN_dem_raster_stack[[3]], col.regions = custom_colors, at=breakpoints,  maxpixels = 1e8, margin = FALSE)
