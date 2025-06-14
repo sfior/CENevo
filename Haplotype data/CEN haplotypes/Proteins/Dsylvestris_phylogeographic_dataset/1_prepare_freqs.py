@@ -25,7 +25,7 @@ import sys
 import re
 
 
-# make dictionary for popualtion names from Hirzi's table
+# make dictionary for popualtion names
 pop_dict={}
 filein1=open(sys.argv[1],'r')
 for line in filein1:

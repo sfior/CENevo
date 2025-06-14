@@ -1,0 +1,16 @@
+Taxon1	Taxon2	D_BBAA
+Group_2	Group_3	0.560174302
+Group_2	Ds	0
+Group_2	Group_4	0
+Group_2	Group_5	0.127235791
+Group_2	Group_6	0.719303577
+Group_3	Ds	0.174526022
+Group_3	Group_4	0
+Group_3	Group_5	0
+Group_3	Group_6	0.041522104
+Ds	Group_4	0
+Ds	Group_5	0.114613026
+Ds	Group_6	0
+Group_4	Group_5	0
+Group_4	Group_6	0
+Group_5	Group_6	0
