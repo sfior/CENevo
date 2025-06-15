@@ -25,7 +25,7 @@ LSD scans for detecting loci under selection and characterising genetic trade-of
 
 **Genomic offset**
 
-Scripts to perform genomic offset and glacial genomic offset+ 
+Gene-environment association models based on gradient forests for predicting shifts in genome-wide adaptive composition (i.e. the genomic offset and glacial genomic offset+)
 
 **Haplotype data**
 
