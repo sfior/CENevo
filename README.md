@@ -9,7 +9,7 @@ Onset of selection: Appoximate Bayesian Computation workflow to estimate the tim
 
 **Distribution modelling**
 
-Scripts to perform haplotype distribution models, with past and future temporal projections
+Scripts to perform allele distribution models, with past and future temporal projections
 
 **Ecology**
 
@@ -17,7 +17,7 @@ Data and scripts assessing phenotypic divergence in common gardens, and for eval
 
 **Genome assembly tools**
 
-Scaffold and gene names used in the manuscript, and workflow to extract annotation for candidate loci
+Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci
 
 **Genome scans**
 
@@ -41,5 +41,5 @@ Population genomic analyses including Poolstat, computation of SFS, Fst genome s
 
 **Radiation introgression**
 
-ABBA-BABA data and scripts: test introgression across the Dianthus radiation with D-statistics
+ABBA-BABA data and scripts: tests for introgression across the Dianthus radiation with D-statistics
 
