@@ -25,7 +25,7 @@ LSD scans for detecting loci under selection and characterising genetic trade-of
 
 **Genomic offset**
 
-Scripts to perform gradient forest-based projections of adaptive genetic composition, genomic offset and glacial genomic offset+ 
+Scripts to perform genomic offset and glacial genomic offset+ 
 
 **Haplotype data**
 
