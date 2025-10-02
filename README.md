@@ -40,7 +40,7 @@ Alignment of FT gene family. Transcripts, data and scripts used in the _Arabidop
 
 ## Population genomics
 
-Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, F~ST~ genome scans using HMM, computation of thetas, F~ST~ and θ plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
+Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, F<sub>ST</sub> genome scans using HMM, computation of thetas, F<sub>ST</sub> and θ plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
 
 ## Radiation introgression
 
