@@ -20,7 +20,7 @@ Data and scripts assessing phenotypic divergence in common gardens, and for eval
 
 ## Genome assembly tools
 
-Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. Genome assemblies, related annotation, and linkage maps are available [here](https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng).
+Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. The genome assemblies, related annotation, and linkage maps are available [here](https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng).
 
 ## Genome scans
 
@@ -36,11 +36,11 @@ Data and scripts for analyses of CEN/2 and TCF1 haplotypes.
 
 ## Molecular biology
 
-Alignment of FT gene family. Transcripts, data and scripts used in _Arabidopsis_ transformation experiment.
+Alignment of FT gene family. Transcripts, data and scripts used in the _Arabidopsis_ transformation experiment.
 
 ## Population genomics
 
-Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
+Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, F~ST~ genome scans using HMM, computation of thetas, F~ST~ and θ plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
 
 ## Radiation introgression
 
