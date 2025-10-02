@@ -1,13 +1,13 @@
 # CENevo
-This repository contains scripts and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" (Simone, Luqman et al. 2025).
+This repository contains scripts and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" (Simone, Luqman et al. 2025). They are organised according to the following directories:
 
-**Demography**
+# Demography
 
 ABC coalmod speciation data and scripts: Appoximate Bayesian Computation to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes.
 
 Onset of selection: Appoximate Bayesian Computation workflow to estimate the time of onset of selection for candidate regions.
 
-**Distribution modelling**
+# Distribution modelling
 
 Scripts to perform allele distribution models, with past and future temporal projections.
 
