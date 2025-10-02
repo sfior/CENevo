@@ -1,4 +1,7 @@
 # CENevo
+
+<img src="https://github.com/sfior/CENevo/blob/main/Figures/D.sylvestris_small.jpg" width="800">
+
 This repository contains code and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" (Simone, Luqman et al. 2025). They are sorted into the following directories:
 
 ## Demography
