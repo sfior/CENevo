@@ -24,7 +24,7 @@ Scaffold and gene names used in the study, and workflow to extract annotation fo
 
 ## Genome scans
 
-LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model. The paper introducing the method (Luqman et al. 2021) can be found [here](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13415) and the GitHub repository is available [here](https://github.com/hirzi/LSD). 
+LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model. LSD was introduced in a previous paper ([Luqman et al. 2021](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13415)) and can be found [here](https://github.com/hirzi/LSD). 
 
 ## Genomic offset
 
