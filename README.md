@@ -25,7 +25,7 @@ LSD scans for detecting loci under selection and characterising genetic trade-of
 
 ## Genomic offset
 
-Gene-environment association models based on gradient forests for predicting shifts in genome-wide adaptive composition (i.e. the genomic offset and glacial genomic offset+). The latter metric was derived in previous work [Luqman et al. 2023](https://www.nature.com/articles/s41467-023-36631-9) 
+Gene-environment association models based on gradient forests for predicting shifts in genome-wide adaptive composition (i.e. the genomic offset and glacial genomic offset+). The latter metric was derived in previous work ([Luqman et al. 2023](https://www.nature.com/articles/s41467-023-36631-9)). 
 
 ## Haplotype data
 
