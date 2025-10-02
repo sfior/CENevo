@@ -1,5 +1,5 @@
 # CENevo
-This repository contains code and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" (Simone, Luqman et al. 2025). They are organised according to the following directories:
+This repository contains code and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" (Simone, Luqman et al. 2025). They are sorted into the following directories:
 
 ## Demography
 
