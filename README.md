@@ -17,7 +17,7 @@ Data and scripts assessing phenotypic divergence in common gardens, and for eval
 
 ## Genome assembly tools
 
-Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. Genome assemblies, related annotation, and linkage maps are available [here](https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng)
+Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. Genome assemblies, related annotation, and linkage maps are available [here](https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng).
 
 ## Genome scans
 
