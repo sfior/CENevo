@@ -3,7 +3,7 @@ This repository contains code and datasets associated with the paper "Ancient al
 
 ## Demography
 
-ABC coalmod speciation data and scripts: Approximate Bayesian Computation (ABC) to estimate the speciation time for D. sylvestris and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes.
+ABC coalmod speciation data and scripts: Approximate Bayesian Computation (ABC) to estimate the speciation time for _D. sylvestris_ and the time to coalescence at the DsCEN/2 locus from a geographic sample of haplotypes.
 
 Onset of selection: ABC workflow to estimate the time of onset of selection for candidate regions.
 
@@ -33,7 +33,7 @@ Data and scripts for analyses of CEN/2 and TCF1 haplotypes.
 
 ## Molecular biology
 
-Alignment of FT gene family. Transcripts, data and scripts used in Arabidopsis transformation experiment.
+Alignment of FT gene family. Transcripts, data and scripts used in _Arabidopsis_ transformation experiment.
 
 ## Population genomics
 
