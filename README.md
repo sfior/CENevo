@@ -41,5 +41,5 @@ Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannla
 
 ## Radiation introgression
 
-ABBA-BABA data and scripts: tests for introgression across the Dianthus radiation with D-statistics.
+ABBA-BABA data and scripts: tests for introgression across the _Dianthus_ radiation with D-statistics.
 
