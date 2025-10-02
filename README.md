@@ -17,15 +17,15 @@ Data and scripts assessing phenotypic divergence in common gardens, and for eval
 
 ## Genome assembly tools
 
-Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. Genome assemblies, related annotation, and linkage maps are available here: https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng
+Scaffold and gene names used in the study, and workflow to extract annotation for candidate loci. Genome assemblies, related annotation, and linkage maps are available [here](https://datadryad.org/dataset/doi:10.5061/dryad.x0k6djhng)
 
 ## Genome scans
 
-LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model. The paper introducing the method (Luqman et al. 2021) can be found [here](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13415) and GitHub repository is available [here](https://github.com/hirzi/LSD). 
+LSD scans for detecting loci under selection and characterising genetic trade-offs, as parameterised under an empirically-informed continent-island model. The paper introducing the method (Luqman et al. 2021) can be found [here](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13415) and the GitHub repository is available [here](https://github.com/hirzi/LSD). 
 
 ## Genomic offset
 
-Gene-environment association models based on gradient forests for predicting shifts in genome-wide adaptive composition (i.e. the genomic offset and glacial genomic offset+).
+Gene-environment association models based on gradient forests for predicting shifts in genome-wide adaptive composition (i.e. the genomic offset and glacial genomic offset+). The latter metric was derived in previous work [Luqman et al. 2023](https://www.nature.com/articles/s41467-023-36631-9) 
 
 ## Haplotype data
 
@@ -37,7 +37,7 @@ Alignment of FT gene family. Transcripts, data and scripts used in Arabidopsis t
 
 ## Population genomics
 
-Population genomic analyses including Poolstat (https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
+Population genomic analyses including [Poolstat](https://bitbucket.org/wegmannlab/poolstat/wiki/Home), computation of SFS, Fst genome scans using HMM, computation of thetas, Fst and theta plots for candidate regions, candidate annotation tables, GWAS on flowering time, LD for focal populations and across the species' range, environmental associations and IBD.
 
 ## Radiation introgression
 
