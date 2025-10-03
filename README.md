@@ -2,7 +2,7 @@
 
 <img src="https://github.com/sfior/CENevo/blob/main/Figures/D.sylvestris_small.jpg" width="800">
 
-This repository contains code and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" ([Simone, Luqman et al. 2025](https://www.science.org/doi/10.1126/science.adp5717)). They are sorted into the following directories:
+This repository contains code and datasets associated with the paper "Ancient alleles drive contemporary climate adaptation in an alpine plant" ([Fior, Luqman et al. 2025](https://www.science.org/doi/10.1126/science.adp5717)). They are sorted into the following directories:
 
 ## Demography
 
